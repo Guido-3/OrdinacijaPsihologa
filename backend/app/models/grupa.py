@@ -11,4 +11,5 @@ class Grupa(Base):
     naziv: Mapped[str] = mapped_column(String, nullable=True)
     opis: Mapped[str] = mapped_column(String, nullable=True)
 
-    termini: Mapped[list["Termin"]] = relationship(secondary="klijent_grupa", back_populates="grupa")
+    termini: Mapped[list["Termin"]] = relationship(back_populates="grupa")
+    klijenti: Mapped[list["Klijent"]] = relationship(secondary=klijent_grupa, back_populates="grupe")

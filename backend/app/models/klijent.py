@@ -18,4 +18,5 @@ class Klijent(Base):
     email: Mapped[str] = mapped_column(String, nullable=False, unique=True)
     fotografija: Mapped[str] = mapped_column(String, nullable=True)
 
-    termini: Mapped[list["Termin"]] = relationship(secondary="klijent_grupa", back_populates="klijent")
+    termini: Mapped[list["Termin"]] = relationship(back_populates="klijent")
+    grupe: Mapped[list["Grupa"]] = relationship(secondary=klijent_grupa, back_populates="klijenti")
