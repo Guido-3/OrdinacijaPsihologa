@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field, ConfigDict, field_validator
 from typing import Optional, Annotated
 
+from schemas.klijent import Klijent
+from schemas.termin import Termin
 
 class GrupaBase(BaseModel):
     naziv: Annotated[str, Field(max_length=50)]
@@ -12,6 +14,10 @@ class GrupaBase(BaseModel):
     def validate_klijenti_id(cls, value):
         if len(value) < 2:
             raise ValueError("Grupa mora imati makar dva klijenta.")
+        
+        if len(set(value)) != len(value):
+            raise ValueError("Lista klijenti_id ne smije sadržavati duplikate.")
+
         return value
 
 class GrupaCreate(GrupaBase):
@@ -33,9 +39,14 @@ class GrupaUpdatePartial(GrupaBase):
         if len(value) < 2:
             raise ValueError("Grupa mora imati makar dva klijenta")
         
+        if len(set(value)) != len(value):
+            raise ValueError("Lista klijenti_id ne smije sadržavati duplikate.")
+
         return value
     
 class Grupa(GrupaBase):
     id: int
+    klijenti: list[Klijent]
+    termini: Optional[list[Termin]] = None
 
     model_config = ConfigDict(from_attributes=True)

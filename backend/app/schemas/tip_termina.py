@@ -1,6 +1,8 @@
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Annotated, Optional
 
+from schemas.termin import Termin
+
 class TipTerminaBase(BaseModel):
     naziv: Annotated[str, Field(min_length=3, max_length=50)]
     opis: Annotated[str, Field(min_length=10, max_length=1000)]
@@ -17,5 +19,5 @@ class TipTerminaUpdatePartial(TipTerminaBase):
 
 class TipTermina(TipTerminaBase):
     id: int
-
+    termini: Optional[list[Termin]] = None
     model_config = ConfigDict(from_attributes=True)

@@ -1,7 +1,21 @@
-from pydantic import BaseModel, Field, ConfigDict, EmailStr
+from pydantic import BaseModel, Field, ConfigDict, EmailStr, field_validator
 from typing import Annotated, Optional
 from datetime import date
 
+from schemas.grupa import Grupa
+from schemas.termin import Termin
+
+# Zasebna funkcija za validaciju lozinke
+def validate_password_complexity(value: str) -> str:
+    if not any(char.isdigit() for char in value):
+        raise ValueError("Lozinka mora sadržavati barem jedan broj.")
+    if not any(char.isupper() for char in value):
+        raise ValueError("Lozinka mora sadržavati barem jedno veliko slovo.")
+    if not any(char.islower() for char in value):
+        raise ValueError("Lozinka mora sadržavati barem jedno malo slovo.")
+    if not any(char in "!@#$%^&*()_+-=[]{}|;':,./<>?" for char in value):
+        raise ValueError("Lozinka mora sadržavati barem jedan specijalan znak.")
+    return value
 
 class KlijentBase(BaseModel):
     ime: Annotated[str, Field(max_length=100)]
@@ -15,9 +29,19 @@ class KlijentBase(BaseModel):
 class KlijentCreate(KlijentBase):
     hashed_password: Annotated[str, Field(min_length=8, max_length=100)]
 
+    @field_validator("hashed_password")
+    @classmethod
+    def validate_password(cls, value):
+        return validate_password_complexity(value)
+
 class KlijentUpdateFull(KlijentBase):
     hashed_password: Annotated[str, Field(min_length=8, max_length=100)]
 
+    @field_validator("hashed_password")
+    @classmethod
+    def validate_password(cls, value):
+        return validate_password_complexity(value)
+    
 class KlijentUpdatePartial(KlijentBase):
     ime: Annotated[Optional[str], Field(max_length=100)] = None
     prezime: Annotated[Optional[str], Field(max_length=100)] = None
@@ -28,7 +52,16 @@ class KlijentUpdatePartial(KlijentBase):
     datum_rodjenja: Optional[date] = None
     fotografija: Optional[str] = None
 
+    @field_validator("hashed_password")
+    @classmethod
+    def validate_password(cls, value):
+        if value is not None:
+            return validate_password_complexity(value)
+        return value
+
 class Klijent(KlijentBase):
     id: int
+    grupe: Optional[list[Grupa]] = None
+    termini: Optional[list[Termin]] = None
 
     model_config = ConfigDict(from_attributes=True)
