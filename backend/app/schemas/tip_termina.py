@@ -21,3 +21,10 @@ class TipTermina(TipTerminaBase):
     id: int
     termini: Optional[list[Termin]] = None
     model_config = ConfigDict(from_attributes=True)
+
+class FilterTip(BaseModel):
+    id: Optional[int] = None
+    naziv: Optional[str] = None
+
+    class Config:
+        orm_mode = True

@@ -8,13 +8,13 @@ from schemas.termin import Termin
 # Zasebna funkcija za validaciju lozinke
 def validate_password_complexity(value: str) -> str:
     if not any(char.isdigit() for char in value):
-        raise ValueError("Lozinka mora sadržavati barem jedan broj.")
+        raise ValueError("Lozinka mora sadržati barem jedan broj.")
     if not any(char.isupper() for char in value):
-        raise ValueError("Lozinka mora sadržavati barem jedno veliko slovo.")
+        raise ValueError("Lozinka mora sadržati barem jedno veliko slovo.")
     if not any(char.islower() for char in value):
-        raise ValueError("Lozinka mora sadržavati barem jedno malo slovo.")
+        raise ValueError("Lozinka mora sadržati barem jedno malo slovo.")
     if not any(char in "!@#$%^&*()_+-=[]{}|;':,./<>?" for char in value):
-        raise ValueError("Lozinka mora sadržavati barem jedan specijalan znak.")
+        raise ValueError("Lozinka mora sadržati barem jedan specijalan znak.")
     return value
 
 class KlijentBase(BaseModel):

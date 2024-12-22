@@ -61,3 +61,15 @@ class Termin(TerminBase):
     tip_termina: TipTermina
 
     model_config = ConfigDict(from_attributes=True)
+
+class FilterTermin(BaseModel):
+    status: Optional[str] = None
+    datum_vrijeme: Optional[datetime] = None
+    klijent_id: Optional[int] = None
+    grupa_id: Optional[int] = None
+    klijent_ime: Optional[str] = None  # Filtriranje po imenu klijenta
+    klijent_prezime: Optional[str] = None  # Filtriranje po prezimenu klijenta
+    naziv_grupe: Optional[str] = None  # Filtriranje po nazivu grupe
+
+    class Config:
+        orm_mode = True
