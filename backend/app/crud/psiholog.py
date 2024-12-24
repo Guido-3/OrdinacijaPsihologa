@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 from models.psiholog import Psiholog
 from schemas.psiholog import PsihologUpdatePartial
 from exceptions import DbnotFoundException
@@ -8,11 +9,11 @@ def get_psiholog(db: Session) -> Psiholog:
     """
     Dohvata psihologa iz baze podataka.
     """
-    psiholog = db.query(Psiholog).first()
+    psiholog = db.execute(select(Psiholog)).scalars().first()
+    # psiholog = db.query(Psiholog).first() // ovo moze ali je bolji noviji pristup - barem chat tako kaze
     if not psiholog:
         raise DbnotFoundException("Psiholog nije pronađen u bazi podataka.")
     return psiholog
-
 
 def update_psiholog(db: Session, psiholog_data: PsihologUpdatePartial) -> Psiholog:
     """

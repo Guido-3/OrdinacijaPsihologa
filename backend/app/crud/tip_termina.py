@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import select
+from sqlalchemy import and_, select
 from models.tip_termina import TipTermina
 from schemas.tip_termina import TipTerminaCreate, TipTerminaUpdatePartial
 from exceptions import DbnotFoundException, DbAlreadyExistsException

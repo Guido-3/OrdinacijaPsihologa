@@ -20,3 +20,10 @@ class KlijentAlreadyExistsException(DatabaseError):
     """
     def __init__(self, message: str = "Klijent već postoji"):
         super().__init__(message)
+
+class TipTerminaAlreadyExistsException(DatabaseError):
+    """
+    Izuzetak za slučaj kada tip termina već postoji u bazi podataka.
+    """
+    def __init__(self, message: str = "Tip termina već postoji"):
+        super().__init__(message)
