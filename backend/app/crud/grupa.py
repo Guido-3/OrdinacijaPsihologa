@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import select
 from models.grupa import Grupa
 from models.klijent import Klijent
-from schemas.grupa import GrupaCreate, GrupaUpdatePartial
+from schemas.grupa import GrupaCreate, GrupaUpdatePartial, GrupaUpdateFull
 from exceptions import DbnotFoundException
 from typing import Optional
 
@@ -79,8 +79,30 @@ def create_grupa(db: Session, grupa_data: GrupaCreate) -> Grupa:
     db.refresh(new_grupa)
     return new_grupa
 
+def update_grupa_full(db: Session, grupa_id: int, grupa_data: GrupaUpdateFull) -> Grupa:
+    """
+    Ažurira sve atribute postojeće grupe na osnovu prosleđenih podataka.
+    """
+    # Dohvatanje grupe po ID-ju
+    grupa = get_grupa(db, grupa_id)
 
-def update_grupa(db: Session, grupa_id: int, grupa_data: GrupaUpdatePartial) -> Grupa:
+    # Ažuriranje atributa
+    grupa.naziv = grupa_data.naziv
+    grupa.opis = grupa_data.opis
+
+    # Validacija i ažuriranje klijenata
+    klijenti = db.query(Klijent).filter(Klijent.id.in_(grupa_data.klijenti_id)).all()
+    if len(klijenti) != len(grupa_data.klijenti_id):
+        missing_ids = set(grupa_data.klijenti_id) - {klijent.id for klijent in klijenti}
+        raise ValueError(f"Klijenti sa ID-evima {missing_ids} ne postoje.")
+    grupa.klijenti = klijenti
+
+    # Komitovanje promena
+    db.commit()
+    db.refresh(grupa)
+    return grupa
+
+def update_grupa_partially(db: Session, grupa_id: int, grupa_data: GrupaUpdatePartial) -> Grupa:
     """
     Ažurira postojeću grupu samo ako svi navedeni klijenti postoje.
     """

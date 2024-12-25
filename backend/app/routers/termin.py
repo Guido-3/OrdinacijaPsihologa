@@ -31,13 +31,13 @@ def create_termin(termin_data: TerminCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.patch("/{termin_id}", response_model=Termin)
-def update_termin(
+def update_termin_partially(
     termin_id: int,
     termin_data: TerminUpdatePartial,
     db: Session = Depends(get_db)
 ):
     try:
-        return termin.update_termin(db, termin_id, termin_data)
+        return termin.update_termin_partially(db, termin_id, termin_data)
     except DbnotFoundException:
         raise HTTPException(status_code=404, detail=f"Termin sa ID-jem '{termin_id}' nije pronađen.")
     except ValueError as e:

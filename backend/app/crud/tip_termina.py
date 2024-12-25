@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, select
 from models.tip_termina import TipTermina
-from schemas.tip_termina import TipTerminaCreate, TipTerminaUpdatePartial
+from schemas.tip_termina import TipTerminaCreate, TipTerminaUpdatePartial, TipTerminaUpdateFull
 from exceptions import DbnotFoundException, DbAlreadyExistsException
 from typing import Optional
 from models.tip_termina import TipTermina
@@ -45,10 +45,6 @@ def list_tipovi_termina(db: Session, filters: Optional[FilterTip] = None) -> lis
 
 
 def create_tip_termina(db: Session, tip_data: TipTerminaCreate) -> TipTermina:
-    """
-    Kreira novi tip termina u bazi podataka.
-    """
-    # Provjera da li postoji tip termina sa istim nazivom
     existing_tip = db.query(TipTermina).filter(TipTermina.naziv == tip_data.naziv).first()
     if existing_tip:
         raise DbAlreadyExistsException(f"Tip termina sa nazivom '{tip_data.naziv}' već postoji.")
@@ -59,11 +55,19 @@ def create_tip_termina(db: Session, tip_data: TipTerminaCreate) -> TipTermina:
     db.refresh(new_tip)
     return new_tip
 
+def update_tip_termina_full(db: Session, tip_id: int, tip_data: TipTerminaUpdateFull) -> TipTermina:
+    tip = get_tip_termina(db, tip_id)
 
-def update_tip_termina(db: Session, tip_id: int, tip_data: TipTerminaUpdatePartial) -> TipTermina:
-    """
-    Ažurira postojeći tip termina.
-    """
+    update_data = tip_data.model_dump()
+
+    for key, value in update_data.items():
+        setattr(tip, key, value)
+
+    db.commit()
+    db.refresh(tip)
+    return tip
+
+def update_tip_termina_partially(db: Session, tip_id: int, tip_data: TipTerminaUpdatePartial) -> TipTermina:
     tip = get_tip_termina(db, tip_id)
 
     update_data = tip_data.model_dump(exclude_unset=True)
@@ -75,11 +79,8 @@ def update_tip_termina(db: Session, tip_id: int, tip_data: TipTerminaUpdateParti
     db.refresh(tip)
     return tip
 
-
 def delete_tip_termina(db: Session, tip_id: int) -> None:
-    """
-    Briše tip termina iz baze podataka.
-    """
     tip = get_tip_termina(db, tip_id)
+    
     db.delete(tip)
     db.commit()

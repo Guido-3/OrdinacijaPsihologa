@@ -27,9 +27,9 @@ def create_klijent(klijent_data: KlijentCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=f"Klijent sa korisničkim imenom '{klijent_data.username}' već postoji.")
 
 @router.patch("/{klijent_id}", response_model=Klijent)
-def update_klijent(klijent_id: int, klijent_data: KlijentUpdatePartial, db: Session = Depends(get_db)):
+def update_klijent_partially(klijent_id: int, klijent_data: KlijentUpdatePartial, db: Session = Depends(get_db)):
     try:
-        return klijent.update_klijent(db, klijent_id, klijent_data)
+        return klijent.update_klijent_partially(db, klijent_id, klijent_data)
     except DbnotFoundException:
         raise HTTPException(status_code=404, detail=f"Klijent sa ID-jem '{klijent_id}' nije pronađen.")
 

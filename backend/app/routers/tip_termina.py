@@ -28,7 +28,7 @@ def create_tip_termina(tip_data: TipTerminaCreate, db: Session = Depends(get_db)
 @router.patch("/{tip_id}", response_model=TipTermina)
 def update_tip_termina_partially(tip_id: int, tip_data: TipTerminaUpdatePartial, db: Session = Depends(get_db)):
     try:
-        return tip_termina.update_tip_termina(db, tip_id, tip_data)
+        return tip_termina.update_tip_termina_partially(db, tip_id, tip_data)
     except DbnotFoundException:
         raise HTTPException(status_code=404, detail=f"Tip termina sa ID-jem '{tip_id}' nije pronadjen u bazi podataka")
     

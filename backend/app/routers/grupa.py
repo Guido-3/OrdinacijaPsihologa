@@ -32,9 +32,9 @@ def create_grupa(grupa_data: GrupaCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.patch("/{grupa_id}", response_model=Grupa)
-def update_grupa(grupa_id: int, grupa_data: GrupaUpdatePartial, db: Session = Depends(get_db)):
+def update_grupa_partially(grupa_id: int, grupa_data: GrupaUpdatePartial, db: Session = Depends(get_db)):
     try:
-        return grupa.update_grupa(db, grupa_id, grupa_data)
+        return grupa.update_grupa_partially(db, grupa_id, grupa_data)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except DbnotFoundException:

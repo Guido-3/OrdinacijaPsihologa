@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from models.psiholog import Psiholog
-from schemas.psiholog import PsihologUpdatePartial
+from schemas.psiholog import PsihologUpdateFull, PsihologUpdatePartial
 from exceptions import DbnotFoundException
 
 
@@ -15,7 +15,19 @@ def get_psiholog(db: Session) -> Psiholog:
         raise DbnotFoundException("Psiholog nije pronađen u bazi podataka.")
     return psiholog
 
-def update_psiholog(db: Session, psiholog_data: PsihologUpdatePartial) -> Psiholog:
+def update_psiholog_full(db: Session, psiholog_data: PsihologUpdateFull) -> Psiholog:
+    psiholog = get_psiholog(db)
+
+    update_data = psiholog_data.model_dump()
+
+    for key, value in update_data.items():
+        setattr(psiholog, key, value)
+
+    db.commit()
+    db.refresh(psiholog)
+    return psiholog
+
+def update_psiholog_partially(db: Session, psiholog_data: PsihologUpdatePartial) -> Psiholog:
     """
     Ažurira podatke psihologa.
     """

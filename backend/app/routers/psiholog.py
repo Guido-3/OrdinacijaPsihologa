@@ -19,6 +19,6 @@ def get_psiholog(db: Session = Depends(get_db)):
 @router.patch("", response_model=Psiholog)
 def update_psiholog_partially(psiholog_data: PsihologUpdatePartial, db: Session = Depends(get_db)):
     try:
-        return psiholog.update_psiholog(db, psiholog_data)
+        return psiholog.update_psiholog_partially(db, psiholog_data)
     except DbnotFoundException:
         raise HTTPException(status_code=404, detail="Psiholog nije pronadjen u bazi podataka.")
