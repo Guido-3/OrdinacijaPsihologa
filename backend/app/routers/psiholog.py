@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from exceptions import DbnotFoundException
-from schemas.psiholog import Psiholog, PsihologUpdatePartial
+from schemas.psiholog import Psiholog, PsihologUpdatePartial, PsihologUpdateFull
 import crud.psiholog as psiholog
 
 
@@ -13,6 +13,13 @@ router = APIRouter(prefix="/psiholog")
 def get_psiholog(db: Session = Depends(get_db)):
     try:
         return psiholog.get_psiholog(db)
+    except DbnotFoundException:
+        raise HTTPException(status_code=404, detail="Psiholog nije pronadjen u bazi podataka.")
+    
+@router.put("", response_model=Psiholog)
+def update_psiholog_full(psiholog_data: PsihologUpdateFull, db: Session = Depends(get_db)):
+    try:
+        return psiholog.update_psiholog_full(db, psiholog_data)
     except DbnotFoundException:
         raise HTTPException(status_code=404, detail="Psiholog nije pronadjen u bazi podataka.")
     

@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from exceptions import DbnotFoundException
-from schemas.grupa import Grupa, GrupaCreate, GrupaUpdatePartial
+from schemas.grupa import Grupa, GrupaCreate, GrupaUpdatePartial, GrupaUpdateFull
 import crud.grupa as grupa
 from database import get_db
 
@@ -31,12 +31,17 @@ def create_grupa(grupa_data: GrupaCreate, db: Session = Depends(get_db)):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+@router.put("/{grupa_id}", response_model=Grupa)
+def update_grupa_full(grupa_id: int, grupa_data: GrupaUpdateFull, db: Session = Depends(get_db)):
+    try:
+        return grupa.update_grupa_full(db, grupa_id, grupa_data)
+    except DbnotFoundException:
+        raise HTTPException(status_code=404, detail=f"Grupa sa ID-jem '{grupa_id}' nije pronađena.")
+
 @router.patch("/{grupa_id}", response_model=Grupa)
 def update_grupa_partially(grupa_id: int, grupa_data: GrupaUpdatePartial, db: Session = Depends(get_db)):
     try:
         return grupa.update_grupa_partially(db, grupa_id, grupa_data)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
     except DbnotFoundException:
         raise HTTPException(status_code=404, detail=f"Grupa sa ID-jem '{grupa_id}' nije pronađena.")
 

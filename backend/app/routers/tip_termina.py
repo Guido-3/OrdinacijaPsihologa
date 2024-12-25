@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from exceptions import DbnotFoundException, TipTerminaAlreadyExistsException
-from schemas.tip_termina import TipTermina, TipTerminaCreate, TipTerminaUpdatePartial, FilterTip
+from schemas.tip_termina import TipTermina, TipTerminaCreate, TipTerminaUpdatePartial, FilterTip, TipTerminaUpdateFull
 import crud.tip_termina as tip_termina
 from database import get_db
 
@@ -25,6 +25,13 @@ def create_tip_termina(tip_data: TipTerminaCreate, db: Session = Depends(get_db)
     except TipTerminaAlreadyExistsException:
         raise HTTPException(status_code=400, detail=f"Tip termina sa nazivom '{tip_data.naziv}' vec postoji u bazi podataka")
     
+@router.put("/{tip_id}", response_model=TipTermina)
+def update_tip_termina_full(tip_id: int, tip_data: TipTerminaUpdateFull, db: Session = Depends(get_db)):
+    try:
+        return tip_termina.update_tip_termina_full(db, tip_id, tip_data)
+    except DbnotFoundException:
+        raise HTTPException(status_code=404, detail=f"Tip termina sa ID-jem '{tip_id}' nije pronadjen u bazi podataka")
+
 @router.patch("/{tip_id}", response_model=TipTermina)
 def update_tip_termina_partially(tip_id: int, tip_data: TipTerminaUpdatePartial, db: Session = Depends(get_db)):
     try:

@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from exceptions import DbnotFoundException, KlijentAlreadyExistsException
-from schemas.klijent import Klijent, KlijentCreate, KlijentUpdatePartial
+from schemas.klijent import Klijent, KlijentCreate, KlijentUpdatePartial, KlijentUpdateFull
 import crud.klijent as klijent
 from database import get_db
 
@@ -25,6 +25,13 @@ def create_klijent(klijent_data: KlijentCreate, db: Session = Depends(get_db)):
         return klijent.create_klijent(db, klijent_data)
     except KlijentAlreadyExistsException:
         raise HTTPException(status_code=400, detail=f"Klijent sa korisničkim imenom '{klijent_data.username}' već postoji.")
+
+@router.put("/{klijent_id}", response_model=Klijent)
+def update_klijent_full(klijent_id: int, klijent_data: KlijentUpdateFull, db: Session = Depends(get_db)):
+    try:
+        return klijent.update_klijent_full(db, klijent_id, klijent_data)
+    except DbnotFoundException:
+        raise HTTPException(status_code=404, detail=f"Klijent sa ID-jem '{klijent_id}' nije pronađen.")
 
 @router.patch("/{klijent_id}", response_model=Klijent)
 def update_klijent_partially(klijent_id: int, klijent_data: KlijentUpdatePartial, db: Session = Depends(get_db)):

@@ -1,7 +1,7 @@
 from typing import List, Optional
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from schemas.termin import Termin, TerminCreate, TerminUpdatePartial, FilterTermin
+from schemas.termin import Termin, TerminCreate, TerminUpdatePartial, FilterTermin, TerminUpdateFull
 import crud.termin as termin
 from database import get_db
 from exceptions import DbnotFoundException
@@ -29,6 +29,13 @@ def create_termin(termin_data: TerminCreate, db: Session = Depends(get_db)):
         return termin.create_termin(db, termin_data)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@router.put("/{termin_id}", response_model=Termin)
+def update_termin_full(termin_id: int, termin_data: TerminUpdateFull, db: Session = Depends(get_db)):
+    try:
+        return termin.update_termin_full(db, termin_id, termin_data)
+    except DbnotFoundException:
+        raise HTTPException(status_code=404, detail=f"Termin sa ID-jem '{termin_id}' nije pronađen.")
 
 @router.patch("/{termin_id}", response_model=Termin)
 def update_termin_partially(
