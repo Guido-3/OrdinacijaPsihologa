@@ -1,12 +1,12 @@
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from exceptions import DbnotFoundException, KlijentAlreadyExistsException
-from schemas.klijent import Klijent, KlijentCreate, KlijentUpdatePartial, KlijentUpdateFull
-import crud.klijent as klijent
-from database import get_db
+from app.exceptions import DbnotFoundException, KlijentAlreadyExistsException
+from app.schemas.klijent import Klijent, KlijentCreate, KlijentUpdatePartial, KlijentUpdateFull
+import app.crud.klijent as klijent
+from app.database import get_db
 
-router = APIRouter(prefix="/klijent")
+router = APIRouter(prefix="/klijent", tags=["Klijent"])
 
 @router.get("/{klijent_id}", response_model=Klijent)
 def get_klijent(klijent_id: int, db: Session = Depends(get_db)):

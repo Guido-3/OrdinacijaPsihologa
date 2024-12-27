@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import select
-from models.grupa import Grupa
-from models.klijent import Klijent
-from schemas.grupa import GrupaCreate, GrupaUpdatePartial, GrupaUpdateFull
-from exceptions import DbnotFoundException
+from app.models.grupa import Grupa
+from app.models.klijent import Klijent
+from app.schemas.grupa import GrupaCreate, GrupaUpdatePartial, GrupaUpdateFull
+from app.exceptions import DbnotFoundException
 from typing import Optional
 
 
@@ -16,37 +16,16 @@ def get_grupa(db: Session, grupa_id: int) -> Grupa:
         raise DbnotFoundException(f"Grupa sa ID-jem '{grupa_id}' nije pronađena.")
     return grupa
 
-# def list_grupe(
-#     db: Session,
-#     naziv: Optional[str] = None,
-#     klijent_ime: Optional[str] = None,
-#     klijent_prezime: Optional[str] = None
-# ) -> list[Grupa]:
-#     """
-#     Dohvata sve grupe ili filtrira po nazivu, imenu i prezimenu klijenata.
-#     """
-#     query = select(Grupa).distinct()
-
-#     if naziv:
-#         query = query.where(Grupa.naziv.ilike(f"%{naziv}%"))
-
-#     if klijent_ime or klijent_prezime:
-#         query = query.join(Grupa.klijenti)
-#         if klijent_ime:
-#             query = query.where(Klijent.ime.ilike(f"%{klijent_ime}%"))
-#         if klijent_prezime:
-#             query = query.where(Klijent.prezime.ilike(f"%{klijent_prezime}%"))
-
-#     return db.scalars(query).all()
-
-# mozda je ovaj kod bolji
 def list_grupe(
     db: Session,
     naziv: Optional[str] = None,
     klijent_ime: Optional[str] = None,
     klijent_prezime: Optional[str] = None
 ) -> list[Grupa]:
-    query = select(Grupa).options(joinedload(Grupa.klijenti))
+    """
+    Dohvata sve grupe ili filtrira po nazivu, imenu i prezimenu klijenata.
+    """
+    query = select(Grupa).distinct()
 
     if naziv:
         query = query.where(Grupa.naziv.ilike(f"%{naziv}%"))
@@ -58,10 +37,29 @@ def list_grupe(
         if klijent_prezime:
             query = query.where(Klijent.prezime.ilike(f"%{klijent_prezime}%"))
 
-    result = db.execute(query).scalars().all()
-    return result
+    return db.scalars(query).all()
 
+# mozda je ovaj kod bolji
+# def list_grupe(
+#     db: Session,
+#     naziv: Optional[str] = None,
+#     klijent_ime: Optional[str] = None,
+#     klijent_prezime: Optional[str] = None
+# ) -> list[Grupa]:
+#     query = select(Grupa).options(joinedload(Grupa.klijenti))
 
+#     if naziv:
+#         query = query.where(Grupa.naziv.ilike(f"%{naziv}%"))
+
+#     if klijent_ime or klijent_prezime:
+#         query = query.join(Grupa.klijenti)
+#         if klijent_ime:
+#             query = query.where(Klijent.ime.ilike(f"%{klijent_ime}%"))
+#         if klijent_prezime:
+#             query = query.where(Klijent.prezime.ilike(f"%{klijent_prezime}%"))
+
+#     result = db.execute(query).scalars().all()
+#     return result
 
 def create_grupa(db: Session, grupa_data: GrupaCreate) -> Grupa:
     """
@@ -77,6 +75,9 @@ def create_grupa(db: Session, grupa_data: GrupaCreate) -> Grupa:
     db.add(new_grupa)
     db.commit()
     db.refresh(new_grupa)
+
+    new_grupa.klijenti_id = [klijent.id for klijent in new_grupa.klijenti]
+
     return new_grupa
 
 def update_grupa_full(db: Session, grupa_id: int, grupa_data: GrupaUpdateFull) -> Grupa:

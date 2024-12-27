@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from models.psiholog import Psiholog
-from schemas.psiholog import PsihologUpdateFull, PsihologUpdatePartial
-from exceptions import DbnotFoundException
+from app.models.psiholog import Psiholog
+from app.schemas.psiholog import PsihologUpdateFull, PsihologUpdatePartial, PsihologCreate
+from app.exceptions import DbnotFoundException
 
 
 def get_psiholog(db: Session) -> Psiholog:
@@ -14,6 +14,14 @@ def get_psiholog(db: Session) -> Psiholog:
     if not psiholog:
         raise DbnotFoundException("Psiholog nije pronađen u bazi podataka.")
     return psiholog
+
+def create_psiholog(db: Session, psiholog_data: PsihologCreate) -> Psiholog:
+    new_psiholog = Psiholog(**psiholog_data.model_dump())
+
+    db.add(new_psiholog)
+    db.commit()
+    db.refresh(new_psiholog)  
+    return new_psiholog
 
 def update_psiholog_full(db: Session, psiholog_data: PsihologUpdateFull) -> Psiholog:
     psiholog = get_psiholog(db)

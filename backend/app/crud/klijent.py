@@ -1,9 +1,9 @@
 from typing import Optional, List
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from models.klijent import Klijent
-from schemas.klijent import KlijentCreate, KlijentUpdatePartial, KlijentUpdateFull
-from exceptions import DbnotFoundException, KlijentAlreadyExistsException
+from app.models.klijent import Klijent
+from app.schemas.klijent import KlijentCreate, KlijentUpdatePartial, KlijentUpdateFull
+from app.exceptions import DbnotFoundException, KlijentAlreadyExistsException
 
 
 def get_klijent(db: Session, klijent_id: int) -> Klijent:
@@ -11,7 +11,6 @@ def get_klijent(db: Session, klijent_id: int) -> Klijent:
     if not klijent:
         raise DbnotFoundException(f"Klijent sa ID-jem '{klijent_id}' nije pronađen.")
     return klijent
-
 
 def list_klijenti(
     db: Session,
@@ -31,7 +30,7 @@ def list_klijenti(
     if username:
         query = query.where(Klijent.username.ilike(f"%{username}%"))
 
-    return db.scalars(query).all()
+    return db.execute(query).scalars().all()
 
 
 def create_klijent(db: Session, klijent_data: KlijentCreate) -> Klijent:

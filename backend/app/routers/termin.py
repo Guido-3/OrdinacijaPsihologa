@@ -1,12 +1,12 @@
 from typing import List, Optional
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from schemas.termin import Termin, TerminCreate, TerminUpdatePartial, FilterTermin, TerminUpdateFull
-import crud.termin as termin
-from database import get_db
-from exceptions import DbnotFoundException
+from app.schemas.termin import Termin, TerminCreate, TerminUpdatePartial, FilterTermin, TerminUpdateFull
+import app.crud.termin as termin
+from app.database import get_db
+from app.exceptions import DbnotFoundException
 
-router = APIRouter(prefix="/termin")
+router = APIRouter(prefix="/termin", tags=["Termin"])
 
 @router.get("/{termin_id}", response_model=Termin)
 def get_termin(termin_id: int, db: Session = Depends(get_db)):

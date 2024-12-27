@@ -1,11 +1,11 @@
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import select, and_
-from models.termin import Termin
-from models.klijent import Klijent
-from models.grupa import Grupa
-from models.tip_termina import TipTermina
-from schemas.termin import FilterTermin, TerminCreate, TerminUpdatePartial, TerminUpdateFull
-from exceptions import DbnotFoundException
+from app.models.termin import Termin
+from app.models.klijent import Klijent
+from app.models.grupa import Grupa
+from app.models.tip_termina import TipTermina
+from app.schemas.termin import FilterTermin, TerminCreate, TerminUpdatePartial, TerminUpdateFull
+from app.exceptions import DbnotFoundException
 from datetime import datetime
 
 def is_time_slot_taken(db: Session, termin_id: int, datum_vrijeme: datetime) -> bool:

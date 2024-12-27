@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String
 
-from association_tables import klijent_grupa
-from database import Base
+from app.models.association_tables import klijent_grupa
+from app.database import Base
 
 class Grupa(Base):
     __tablename__ = "grupe"

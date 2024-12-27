@@ -1,12 +1,27 @@
 from pydantic import BaseModel, Field, ConfigDict, field_validator
-from typing import Optional, Annotated
+from typing import Optional, Annotated, TYPE_CHECKING
 
-from schemas.klijent import Klijent
-from schemas.termin import Termin
+if TYPE_CHECKING:
+    from app.schemas.klijent import Klijent
+    from app.schemas.termin import Termin
 
 class GrupaBase(BaseModel):
     naziv: Annotated[str, Field(max_length=50)]
     opis: Annotated[Optional[str], Field(max_length=200)] = None
+    # klijenti_id: list[int]
+
+    # @field_validator("klijenti_id")
+    # @classmethod
+    # def validate_klijenti_id(cls, value):
+    #     if len(value) < 2:
+    #         raise ValueError("Grupa mora imati makar dva klijenta.")
+        
+    #     if len(set(value)) != len(value):
+    #         raise ValueError("Lista klijenti_id ne smije sadržavati duplikate.")
+
+    #     return value
+
+class GrupaCreate(GrupaBase):
     klijenti_id: list[int]
 
     @field_validator("klijenti_id")
@@ -20,11 +35,19 @@ class GrupaBase(BaseModel):
 
         return value
 
-class GrupaCreate(GrupaBase):
-    pass
-
 class GrupaUpdateFull(GrupaBase):
-    pass
+    klijenti_id: list[int]
+
+    @field_validator("klijenti_id")
+    @classmethod
+    def validate_klijenti_id(cls, value):
+        if len(value) < 2:
+            raise ValueError("Grupa mora imati makar dva klijenta.")
+        
+        if len(set(value)) != len(value):
+            raise ValueError("Lista klijenti_id ne smije sadržavati duplikate.")
+
+        return value
 
 class GrupaUpdatePartial(GrupaBase):
     naziv: Annotated[Optional[str], Field(max_length=50)] = None
@@ -46,7 +69,9 @@ class GrupaUpdatePartial(GrupaBase):
     
 class Grupa(GrupaBase):
     id: int
-    klijenti: list[Klijent]
-    termini: Optional[list[Termin]] = None
+    if TYPE_CHECKING:
+        klijenti: list["Klijent"]
+        termini: Optional[list["Termin"]] = None
 
     model_config = ConfigDict(from_attributes=True)
+

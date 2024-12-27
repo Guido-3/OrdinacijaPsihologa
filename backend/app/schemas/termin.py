@@ -1,10 +1,11 @@
 from pydantic import BaseModel, Field, ConfigDict, model_validator
-from typing import Annotated, Optional
+from typing import Annotated, Optional, TYPE_CHECKING
 from datetime import datetime
 
-from schemas.klijent import Klijent
-from schemas.grupa import Grupa
-from schemas.tip_termina import TipTermina
+if TYPE_CHECKING:
+    from app.schemas.grupa import Grupa
+    from app.schemas.klijent import Klijent
+    from app.schemas.tip_termina import TipTermina
 
 class TerminBase(BaseModel):
     status: Annotated[str, Field(enum=["zakazan", "blokiran"])]
@@ -13,6 +14,7 @@ class TerminBase(BaseModel):
     tip_termina_id: int
     klijent_id: Optional[int] = None
     grupa_id: Optional[int] = None
+    psiholog_id: int = 1
 
     @model_validator(mode="before")
     @classmethod
@@ -56,9 +58,10 @@ class TerminUpdatePartial(TerminBase):
     
 class Termin(TerminBase):
     id: int
-    klijent: Optional[Klijent] = None
-    grupa: Optional[Grupa] = None
-    tip_termina: TipTermina
+    if TYPE_CHECKING:
+        klijent: Optional["Klijent"] = None
+        grupa: Optional["Grupa"] = None
+        tip_termina: TipTermina
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -72,4 +75,4 @@ class FilterTermin(BaseModel):
     naziv_grupe: Optional[str] = None  # Filtriranje po nazivu grupe
 
     class Config:
-        orm_mode = True
+        model_config = ConfigDict(from_attributes=True)

@@ -1,9 +1,10 @@
 from pydantic import BaseModel, Field, ConfigDict, EmailStr, field_validator
-from typing import Annotated, Optional
+from typing import Annotated, Optional, TYPE_CHECKING
 from datetime import date
 
-from schemas.grupa import Grupa
-from schemas.termin import Termin
+if TYPE_CHECKING:
+    from app.schemas.grupa import Grupa
+    from app.schemas.termin import Termin
 
 # Zasebna funkcija za validaciju lozinke
 def validate_password_complexity(value: str) -> str:
@@ -61,7 +62,9 @@ class KlijentUpdatePartial(KlijentBase):
 
 class Klijent(KlijentBase):
     id: int
-    grupe: Optional[list[Grupa]] = None
-    termini: Optional[list[Termin]] = None
+    if TYPE_CHECKING:
+        grupe: Optional[list["Grupa"]] = None
+        termini: Optional[list["Termin"]] = None
 
     model_config = ConfigDict(from_attributes=True)
+

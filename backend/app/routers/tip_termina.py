@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from exceptions import DbnotFoundException, TipTerminaAlreadyExistsException
-from schemas.tip_termina import TipTermina, TipTerminaCreate, TipTerminaUpdatePartial, FilterTip, TipTerminaUpdateFull
-import crud.tip_termina as tip_termina
-from database import get_db
+from app.exceptions import DbnotFoundException, TipTerminaAlreadyExistsException
+from app.schemas.tip_termina import TipTermina, TipTerminaCreate, TipTerminaUpdatePartial, FilterTip, TipTerminaUpdateFull
+import app.crud.tip_termina as tip_termina
+from app.database import get_db
 
-router = APIRouter(prefix="/tip_termina")
+router = APIRouter(prefix="/tip_termina", tags=["Tip termina"])
 
 @router.get("/{tip_id}", response_model=TipTermina)
 def get_tip_termina(tip_id: int, db: Session = Depends(get_db)):

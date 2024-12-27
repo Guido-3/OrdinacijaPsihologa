@@ -1,12 +1,12 @@
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from exceptions import DbnotFoundException
-from schemas.grupa import Grupa, GrupaCreate, GrupaUpdatePartial, GrupaUpdateFull
-import crud.grupa as grupa
-from database import get_db
+from app.exceptions import DbnotFoundException
+from app.schemas.grupa import Grupa, GrupaCreate, GrupaUpdatePartial, GrupaUpdateFull
+import app.crud.grupa as grupa
+from app.database import get_db
 
-router = APIRouter(prefix="/grupa")
+router = APIRouter(prefix="/grupa", tags=["Grupa"])
 
 @router.get("/{grupa_id}", response_model=Grupa)
 def get_grupa(grupa_id: int, db: Session = Depends(get_db)):

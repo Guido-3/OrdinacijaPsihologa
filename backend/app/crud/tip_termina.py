@@ -1,11 +1,11 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, select
-from models.tip_termina import TipTermina
-from schemas.tip_termina import TipTerminaCreate, TipTerminaUpdatePartial, TipTerminaUpdateFull
-from exceptions import DbnotFoundException, DbAlreadyExistsException
+from app.models.tip_termina import TipTermina
+from app.schemas.tip_termina import TipTerminaCreate, TipTerminaUpdatePartial, TipTerminaUpdateFull
+from app.exceptions import DbnotFoundException
 from typing import Optional
-from models.tip_termina import TipTermina
-from schemas.tip_termina import FilterTip
+from app.models.tip_termina import TipTermina
+from app.schemas.tip_termina import FilterTip
 
 
 def get_tip_termina(db: Session, tip_id: int) -> TipTermina:
@@ -47,7 +47,7 @@ def list_tipovi_termina(db: Session, filters: Optional[FilterTip] = None) -> lis
 def create_tip_termina(db: Session, tip_data: TipTerminaCreate) -> TipTermina:
     existing_tip = db.query(TipTermina).filter(TipTermina.naziv == tip_data.naziv).first()
     if existing_tip:
-        raise DbAlreadyExistsException(f"Tip termina sa nazivom '{tip_data.naziv}' već postoji.")
+        raise DbnotFoundException(f"Tip termina sa nazivom '{tip_data.naziv}' već postoji.")
 
     new_tip = TipTermina(**tip_data.model_dump())
     db.add(new_tip)

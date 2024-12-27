@@ -1,7 +1,7 @@
 from datetime import date
 from sqlalchemy import Integer, String, Date
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from database import Base
+from app.database import Base
 
 class Psiholog(Base):
     __tablename__ = "psiholozi"
