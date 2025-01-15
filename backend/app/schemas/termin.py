@@ -1,11 +1,13 @@
 from pydantic import BaseModel, Field, ConfigDict, model_validator
-from typing import Annotated, Optional, TYPE_CHECKING
+from typing import Annotated, Optional, ForwardRef
 from datetime import datetime
+# from app.schemas.grupa import Grupa
+# from app.schemas.klijent import Klijent
+# from app.schemas.tip_termina import TipTermina
 
-if TYPE_CHECKING:
-    from app.schemas.grupa import Grupa
-    from app.schemas.klijent import Klijent
-    from app.schemas.tip_termina import TipTermina
+# Grupa = ForwardRef("Grupa")
+# Klijent = ForwardRef("Klijent")
+# TipTermina = ForwardRef("TipTermina")
 
 class TerminBase(BaseModel):
     status: Annotated[str, Field(enum=["zakazan", "blokiran"])]
@@ -15,10 +17,16 @@ class TerminBase(BaseModel):
     klijent_id: Optional[int] = None
     grupa_id: Optional[int] = None
     psiholog_id: int = 1
+    
+    model_config = ConfigDict(validate_assignment=True)
 
+class TerminCreate(TerminBase):
     @model_validator(mode="before")
     @classmethod
     def validate_klijent_or_grupa(cls, values):
+        if not isinstance(values, dict):
+            values = vars(values)
+
         klijent_id = values.get("klijent_id")
         grupa_id = values.get("grupa_id")
 
@@ -28,14 +36,23 @@ class TerminBase(BaseModel):
             raise ValueError("Termin mora imati ili samo klijenta ili samo grupu klijenata.")
         
         return values
-    
-    model_config = ConfigDict(validate_assignment=True)
-
-class TerminCreate(TerminBase):
-    pass
 
 class TerminUpdateFull(TerminBase):
-    pass
+    @model_validator(mode="before")
+    @classmethod
+    def validate_klijent_or_grupa(cls, values):
+        if not isinstance(values, dict):
+            values = vars(values)
+
+        klijent_id = values.get("klijent_id")
+        grupa_id = values.get("grupa_id")
+
+        if not klijent_id and not grupa_id:
+            raise ValueError("Termin mora imati ili samo klijenta ili samo grupu klijenata.")
+        if klijent_id and grupa_id:
+            raise ValueError("Termin mora imati ili samo klijenta ili samo grupu klijenata.")
+        
+        return values
 
 class TerminUpdatePartial(TerminBase):
     status: Optional[Annotated[str, Field(enum=["zakazan", "blokiran"])]] = None
@@ -58,10 +75,9 @@ class TerminUpdatePartial(TerminBase):
     
 class Termin(TerminBase):
     id: int
-    if TYPE_CHECKING:
-        klijent: Optional["Klijent"] = None
-        grupa: Optional["Grupa"] = None
-        tip_termina: TipTermina
+    # klijent: Optional[Klijent] = None
+    # grupa: Optional[Grupa] = None
+    # tip_termina: TipTermina
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -76,3 +92,9 @@ class FilterTermin(BaseModel):
 
     class Config:
         model_config = ConfigDict(from_attributes=True)
+
+# from app.schemas.grupa import Grupa
+# from app.schemas.klijent import Klijent
+# from app.schemas.tip_termina import TipTermina
+
+# Termin.model_rebuild()

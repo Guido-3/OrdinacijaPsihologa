@@ -1,7 +1,10 @@
 from pydantic import BaseModel, ConfigDict, Field
-from typing import Annotated, Optional, List
+from typing import Annotated, Optional, List, ForwardRef
+# from app.schemas.termin import Termin
 
-from app.schemas.termin import Termin
+# Termin = ForwardRef("Termin")
+
+# import app.schemas.termin as termin
 
 class TipTerminaBase(BaseModel):
     naziv: Annotated[str, Field(min_length=3, max_length=50)]
@@ -19,7 +22,7 @@ class TipTerminaUpdatePartial(TipTerminaBase):
 
 class TipTermina(TipTerminaBase):
     id: int
-    termini: Optional[list["Termin"]] = None
+    # termini: Optional[list[Termin]] = None
     model_config = ConfigDict(from_attributes=True)
 
 class FilterTip(BaseModel):
@@ -29,3 +32,6 @@ class FilterTip(BaseModel):
     class Config:
         model_config = ConfigDict(from_attributes=True)
 
+# from app.schemas.termin import Termin
+
+# TipTermina.model_rebuild()

@@ -1,18 +1,28 @@
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session, joinedload, selectinload
 from sqlalchemy import select, and_
 from app.models.termin import Termin
 from app.models.klijent import Klijent
 from app.models.grupa import Grupa
 from app.models.tip_termina import TipTermina
-from app.schemas.termin import FilterTermin, TerminCreate, TerminUpdatePartial, TerminUpdateFull
+import app.schemas.termin as terminSchemas
+# from app.schemas.shared import TerminCreate, TerminUpdateFull, TerminUpdatePartial, FilterTermin
 from app.exceptions import DbnotFoundException
 from datetime import datetime
 
 def is_time_slot_taken(db: Session, termin_id: int, datum_vrijeme: datetime) -> bool:
     """
-    Proverava da li već postoji termin u datom vremenskom slotu,
-    isključujući trenutni termin koji se ažurira.
+    Proverava da li je vremenski slot zauzet i da li je unutar radnog vremena.
+    Termini mogu biti zakazani samo na pune sate između 8:00 i 16:00.
     """
+    # Provera da li je vreme zakazivanja na puni sat
+    if datum_vrijeme.minute != 0 or datum_vrijeme.second != 0:
+        raise ValueError("Termin može biti zakazan samo na pune sate (npr. 10:00, 11:00).")
+    
+    # Provera da li je vreme zakazivanja unutar radnog vremena
+    if datum_vrijeme.hour < 8 or datum_vrijeme.hour >= 16:
+        raise ValueError("Termin mora biti unutar radnog vremena (od 8:00 do 16:00).")
+    
+    # Provera da li je vremenski slot već zauzet (osim za trenutni termin koji se ažurira)
     query = select(Termin).where(
         Termin.datum_vrijeme == datum_vrijeme,
         Termin.id != termin_id
@@ -26,13 +36,25 @@ def get_termin(db: Session, termin_id: int) -> Termin:
     Dohvata termin po ID-u.
     Ako termin ne postoji, baca izuzetak.
     """
-    termin = db.get(Termin, termin_id)
+
+    result = db.execute(
+        select(Termin)
+        .where(Termin.id == termin_id)
+        .options(
+            selectinload(Termin.klijent),
+            selectinload(Termin.grupa),
+            selectinload(Termin.tip_termina)
+        )
+    )
+
+    termin = result.scalars().first()
+
     if not termin:
-        raise DbnotFoundException(f"Termin sa ID-jem '{termin_id}' nije pronađen.")
+        raise DbnotFoundException(f"Termin sa ID-jem{termin_id} nije pronadjen")
+    
     return termin
 
-
-def list_termini(db: Session, filters: FilterTermin = FilterTermin()) -> list[Termin]:
+def list_termini(db: Session, filters: terminSchemas.FilterTermin = terminSchemas.FilterTermin()) -> list[Termin]:
     """
     Dohvata sve termine ili filtrira prema prosleđenim parametrima
     (status, datum, klijent, grupa, ime i prezime klijenta, naziv grupe).
@@ -65,21 +87,41 @@ def list_termini(db: Session, filters: FilterTermin = FilterTermin()) -> list[Te
     return db.execute(query).scalars().all()
 
 
-def create_termin(db: Session, termin_data: TerminCreate) -> Termin:
+def create_termin(db: Session, termin_data: terminSchemas.TerminCreate) -> Termin:
     """
-    Kreira novi termin.
+    Kreira novi termin nakon validacije da li vremenski slot ispunjava uslove.
     """
+    # Validacija zauzetog vremena
+    if is_time_slot_taken(db, None, termin_data.datum_vrijeme):
+        raise ValueError(f"Termin u datom vremenskom slotu ({termin_data.datum_vrijeme}) je već zauzet.")
+
+    # Validacija tipa termina
+    tip_termina = db.get(TipTermina, termin_data.tip_termina_id)
+    if not tip_termina:
+        raise DbnotFoundException(f"Tip termina sa ID-jem '{termin_data.tip_termina_id}' nije pronađen.")
+    
+    # Validacija klijenta ili grupe
+    if termin_data.klijent_id:
+        klijent = db.get(Klijent, termin_data.klijent_id)
+        if not klijent:
+            raise DbnotFoundException(f"Klijent sa ID-jem '{termin_data.klijent_id}' nije pronađen.")
+    elif termin_data.grupa_id:
+        grupa = db.get(Grupa, termin_data.grupa_id)
+        if not grupa:
+            raise DbnotFoundException(f"Grupa sa ID-jem '{termin_data.grupa_id}' nije pronađena.")
+    else:
+        raise ValueError("Termin mora imati ili klijenta ili grupu, ali ne oba.")
+
+    # Kreiranje termina
     new_termin = Termin(**termin_data.model_dump())
     db.add(new_termin)
     db.commit()
     db.refresh(new_termin)
     return new_termin
 
-
-def update_termin_full(db: Session, termin_id: int, termin_data: TerminUpdateFull) -> Termin:
+def update_termin_full(db: Session, termin_id: int, termin_data: terminSchemas.TerminUpdateFull) -> Termin:
     """
-    Ažurira sve atribute postojećeg termina na osnovu prosleđenih podataka.
-    Proverava da li je novo vreme termina već zauzeto.
+    Ažurira sve atribute postojećeg termina nakon validacije.
     """
     # Dohvatanje termina po ID-ju
     termin = get_termin(db, termin_id)
@@ -88,18 +130,13 @@ def update_termin_full(db: Session, termin_id: int, termin_data: TerminUpdateFul
     if is_time_slot_taken(db, termin_id, termin_data.datum_vrijeme):
         raise ValueError(f"Termin u datom vremenskom slotu ({termin_data.datum_vrijeme}) je već zauzet.")
 
-    # Ažuriranje osnovnih atributa
-    termin.status = termin_data.status
-    termin.datum_vrijeme = termin_data.datum_vrijeme
-    termin.nacin_izvodjenja = termin_data.nacin_izvodjenja
-
-    # Validacija i ažuriranje tipa termina
+    # Validacija tipa termina
     tip_termina = db.get(TipTermina, termin_data.tip_termina_id)
     if not tip_termina:
         raise DbnotFoundException(f"Tip termina sa ID-jem '{termin_data.tip_termina_id}' nije pronađen.")
     termin.tip_termina = tip_termina
 
-    # Validacija i ažuriranje klijenta ili grupe
+    # Validacija klijenta ili grupe
     if termin_data.klijent_id:
         klijent = db.get(Klijent, termin_data.klijent_id)
         if not klijent:
@@ -115,16 +152,19 @@ def update_termin_full(db: Session, termin_id: int, termin_data: TerminUpdateFul
     else:
         raise ValueError("Termin mora imati ili klijenta ili grupu, ali ne oba.")
 
+    # Ažuriranje ostalih atributa
+    termin.status = termin_data.status
+    termin.datum_vrijeme = termin_data.datum_vrijeme
+    termin.nacin_izvodjenja = termin_data.nacin_izvodjenja
+
     # Komitovanje promena
     db.commit()
     db.refresh(termin)
     return termin
 
-
-def update_termin_partially(db: Session, termin_id: int, termin_data: TerminUpdatePartial) -> Termin:
+def update_termin_partially(db: Session, termin_id: int, termin_data: terminSchemas.TerminUpdatePartial) -> Termin:
     """
-    Ažurira određene atribute termina na osnovu prosleđenih podataka.
-    Proverava da li je novo vreme termina već zauzeto.
+    Ažurira određene atribute termina nakon validacije.
     """
     # Dohvatanje termina po ID-ju
     termin = get_termin(db, termin_id)
@@ -133,7 +173,31 @@ def update_termin_partially(db: Session, termin_id: int, termin_data: TerminUpda
     if termin_data.datum_vrijeme and is_time_slot_taken(db, termin_id, termin_data.datum_vrijeme):
         raise ValueError(f"Termin u datom vremenskom slotu ({termin_data.datum_vrijeme}) je već zauzet.")
 
-    # Ažuriranje atributa na osnovu prosleđenih vrednosti
+    # Validacija atributa
+    if termin_data.tip_termina_id is not None:
+        tip_termina = db.get(TipTermina, termin_data.tip_termina_id)
+        if not tip_termina:
+            raise DbnotFoundException(f"Tip termina sa ID-jem '{termin_data.tip_termina_id}' nije pronađen.")
+        termin.tip_termina = tip_termina
+
+    if termin_data.klijent_id is not None:
+        klijent = db.get(Klijent, termin_data.klijent_id)
+        if not klijent:
+            raise DbnotFoundException(f"Klijent sa ID-jem '{termin_data.klijent_id}' nije pronađen.")
+        termin.klijent = klijent
+        termin.grupa = None  # Osigurati da grupa bude prazna
+    elif termin_data.grupa_id is not None:
+        grupa = db.get(Grupa, termin_data.grupa_id)
+        if not grupa:
+            raise DbnotFoundException(f"Grupa sa ID-jem '{termin_data.grupa_id}' nije pronađena.")
+        termin.grupa = grupa
+        termin.klijent = None  # Osigurati da klijent bude prazan
+
+    # Proveri konflikt klijenta i grupe (samo ako se oba ažuriraju u istom zahtevu)
+    if termin.klijent is not None and termin.grupa is not None:
+        raise ValueError("Termin mora imati ili samo klijenta ili samo grupu klijenata.")
+
+    # Ažuriranje preostalih atributa
     update_data = termin_data.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(termin, key, value)

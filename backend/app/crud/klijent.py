@@ -2,7 +2,8 @@ from typing import Optional, List
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from app.models.klijent import Klijent
-from app.schemas.klijent import KlijentCreate, KlijentUpdatePartial, KlijentUpdateFull
+import app.schemas.klijent as klijentSchemas
+# from app.schemas.shared import KlijentCreate, KlijentUpdateFull, KlijentUpdatePartial
 from app.exceptions import DbnotFoundException, KlijentAlreadyExistsException
 
 
@@ -33,7 +34,7 @@ def list_klijenti(
     return db.execute(query).scalars().all()
 
 
-def create_klijent(db: Session, klijent_data: KlijentCreate) -> Klijent:
+def create_klijent(db: Session, klijent_data: klijentSchemas.KlijentCreate) -> Klijent:
     """
     Kreira novog klijenta u bazi podataka, ali provjerava da li već postoji klijent sa istim korisničkim imenom.
     """
@@ -48,7 +49,7 @@ def create_klijent(db: Session, klijent_data: KlijentCreate) -> Klijent:
     db.refresh(new_klijent)
     return new_klijent
 
-def update_klijent_full(db: Session, klijent_id: int, klijent_data: KlijentUpdateFull) -> Klijent:
+def update_klijent_full(db: Session, klijent_id: int, klijent_data: klijentSchemas.KlijentUpdateFull) -> Klijent:
     klijent = db.get(Klijent, klijent_id)
 
     # Provera da li korisničko ime već postoji kod drugog klijenta
@@ -65,7 +66,7 @@ def update_klijent_full(db: Session, klijent_id: int, klijent_data: KlijentUpdat
     db.refresh(klijent)
     return klijent
 
-def update_klijent_partially(db: Session, klijent_id: int, klijent_data: KlijentUpdatePartial) -> Klijent:
+def update_klijent_partially(db: Session, klijent_id: int, klijent_data: klijentSchemas.KlijentUpdatePartial) -> Klijent:
     klijent = get_klijent(db, klijent_id)
 
     # Provera da li korisničko ime već postoji kod drugog klijenta

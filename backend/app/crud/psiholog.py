@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from app.models.psiholog import Psiholog
 from app.schemas.psiholog import PsihologUpdateFull, PsihologUpdatePartial, PsihologCreate
+# from app.schemas.shared import PsihologCreate, PsihologUpdateFull, PsihologUpdatePartial
 from app.exceptions import DbnotFoundException
 
 

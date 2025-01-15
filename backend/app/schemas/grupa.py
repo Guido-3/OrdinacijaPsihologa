@@ -1,25 +1,17 @@
 from pydantic import BaseModel, Field, ConfigDict, field_validator
-from typing import Optional, Annotated, TYPE_CHECKING
+from typing import Optional, Annotated, ForwardRef
+# from app.schemas.klijent import Klijent
+# from app.schemas.termin import Termin
 
-if TYPE_CHECKING:
-    from app.schemas.klijent import Klijent
-    from app.schemas.termin import Termin
+# Klijent = ForwardRef("Klijent")
+# Termin = ForwardRef("Termin")
+
+# import app.schemas.klijent as klijent
+# import app.schemas.termin as termin
 
 class GrupaBase(BaseModel):
     naziv: Annotated[str, Field(max_length=50)]
     opis: Annotated[Optional[str], Field(max_length=200)] = None
-    # klijenti_id: list[int]
-
-    # @field_validator("klijenti_id")
-    # @classmethod
-    # def validate_klijenti_id(cls, value):
-    #     if len(value) < 2:
-    #         raise ValueError("Grupa mora imati makar dva klijenta.")
-        
-    #     if len(set(value)) != len(value):
-    #         raise ValueError("Lista klijenti_id ne smije sadržavati duplikate.")
-
-    #     return value
 
 class GrupaCreate(GrupaBase):
     klijenti_id: list[int]
@@ -69,9 +61,12 @@ class GrupaUpdatePartial(GrupaBase):
     
 class Grupa(GrupaBase):
     id: int
-    if TYPE_CHECKING:
-        klijenti: list["Klijent"]
-        termini: Optional[list["Termin"]] = None
+    # klijenti: list[Klijent]
+    # termini: Optional[list[Termin]] = None
 
     model_config = ConfigDict(from_attributes=True)
 
+# from app.schemas.klijent import Klijent
+# from app.schemas.termin import Termin
+
+# Grupa.model_rebuild()

@@ -2,7 +2,8 @@ from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import select
 from app.models.grupa import Grupa
 from app.models.klijent import Klijent
-from app.schemas.grupa import GrupaCreate, GrupaUpdatePartial, GrupaUpdateFull
+import app.schemas.grupa as grupaSchemas
+# from app.schemas.shared import GrupaCreate, GrupaUpdateFull, GrupaUpdatePartial
 from app.exceptions import DbnotFoundException
 from typing import Optional
 
@@ -61,7 +62,7 @@ def list_grupe(
 #     result = db.execute(query).scalars().all()
 #     return result
 
-def create_grupa(db: Session, grupa_data: GrupaCreate) -> Grupa:
+def create_grupa(db: Session, grupa_data: grupaSchemas.GrupaCreate) -> Grupa:
     """
     Kreira novu grupu samo ako svi navedeni klijenti postoje.
     """
@@ -80,7 +81,7 @@ def create_grupa(db: Session, grupa_data: GrupaCreate) -> Grupa:
 
     return new_grupa
 
-def update_grupa_full(db: Session, grupa_id: int, grupa_data: GrupaUpdateFull) -> Grupa:
+def update_grupa_full(db: Session, grupa_id: int, grupa_data: grupaSchemas.GrupaUpdateFull) -> Grupa:
     """
     Ažurira sve atribute postojeće grupe na osnovu prosleđenih podataka.
     """
@@ -103,7 +104,7 @@ def update_grupa_full(db: Session, grupa_id: int, grupa_data: GrupaUpdateFull) -
     db.refresh(grupa)
     return grupa
 
-def update_grupa_partially(db: Session, grupa_id: int, grupa_data: GrupaUpdatePartial) -> Grupa:
+def update_grupa_partially(db: Session, grupa_id: int, grupa_data: grupaSchemas.GrupaUpdatePartial) -> Grupa:
     """
     Ažurira postojeću grupu samo ako svi navedeni klijenti postoje.
     """
