@@ -1,0 +1,18 @@
+KURS - ORDINACIJA PSIHOLOGA
+- dobro analizirati/nauciti kod
+- testirati sve rute i pronaci greske
+	psiholog, tip termina, klijent su dobri!!!!!!!!!
+	Grupa radi kako treba, mada treba dodati da se u get metodama 
+	prikazuju i ID-evi klijenata ili 
+	potencijalno citavi objekti klijenata 
+	TERMIN:
+	get po id-ju radi kako treba
+	get listu termina, radi po statusu, 
+	po datum vrijeme radi samo za tacno taj datumvrijeme a ne za citav dan,
+	po imenu, prezimenu, klijenta, grupe ne radi vec daje citavu listu.
+	put, patch, delete rade kako treba 
+- popraviti greske, radi po klijent id-ju, grupa_id, 
+- analizirati sta je jos potrebno za API i napraviti to
+    PROMJENITI GRUPU TAKO DA U GET METODA DOLAZE I CITAVI OBJEKTI KLIJENATA KOJI CINI GRUPU
+    PROMJENITI TERMIN DA SE U GET METODAMA PRIKAZUJU CITAVI OBJEKTI KLIJENATA/GRUPA ANE NJIHOVI ID-JEVI
+- probati napraviti osnovan frontend 

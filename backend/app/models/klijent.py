@@ -2,8 +2,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Integer, Date
 from datetime import date
 
-from association_tables import klijent_grupa
-from database import Base
+from app.models.association_tables import klijent_grupa
+from app.database import Base
 
 class Klijent(Base):
     __tablename__ = "klijenti"

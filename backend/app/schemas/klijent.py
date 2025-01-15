@@ -1,20 +1,25 @@
 from pydantic import BaseModel, Field, ConfigDict, EmailStr, field_validator
-from typing import Annotated, Optional
+from typing import Annotated, Optional, ForwardRef
 from datetime import date
+# from app.schemas.grupa import Grupa
+# from app.schemas.termin import Termin
 
-from schemas.grupa import Grupa
-from schemas.termin import Termin
+# Grupa = ForwardRef("Grupa")
+# Termin = ForwardRef("Termin")
+
+# import app.schemas.grupa as grupa
+# import app.schemas.termin as termin
 
 # Zasebna funkcija za validaciju lozinke
 def validate_password_complexity(value: str) -> str:
     if not any(char.isdigit() for char in value):
-        raise ValueError("Lozinka mora sadržavati barem jedan broj.")
+        raise ValueError("Lozinka mora sadržati barem jedan broj.")
     if not any(char.isupper() for char in value):
-        raise ValueError("Lozinka mora sadržavati barem jedno veliko slovo.")
+        raise ValueError("Lozinka mora sadržati barem jedno veliko slovo.")
     if not any(char.islower() for char in value):
-        raise ValueError("Lozinka mora sadržavati barem jedno malo slovo.")
+        raise ValueError("Lozinka mora sadržati barem jedno malo slovo.")
     if not any(char in "!@#$%^&*()_+-=[]{}|;':,./<>?" for char in value):
-        raise ValueError("Lozinka mora sadržavati barem jedan specijalan znak.")
+        raise ValueError("Lozinka mora sadržati barem jedan specijalan znak.")
     return value
 
 class KlijentBase(BaseModel):
@@ -61,7 +66,12 @@ class KlijentUpdatePartial(KlijentBase):
 
 class Klijent(KlijentBase):
     id: int
-    grupe: Optional[list[Grupa]] = None
-    termini: Optional[list[Termin]] = None
+    # grupe: Optional[list[Grupa]] = None
+    # termini: Optional[list[Termin]] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+# from app.schemas.grupa import Grupa
+# from app.schemas.termin import Termin
+
+# Klijent.model_rebuild()

@@ -1,5 +1,5 @@
 from sqlalchemy import Table, Column, Integer, ForeignKey
-from database import Base
+from app.database import Base
 
 klijent_grupa = Table(
     "klijent_grupa", 

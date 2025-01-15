@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String
-from database import Base
+from app.database import Base
 
 
 class TipTermina(Base):
