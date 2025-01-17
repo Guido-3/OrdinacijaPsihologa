@@ -5,6 +5,8 @@ from app.models.klijent import Klijent
 import app.schemas.klijent as klijentSchemas
 # from app.schemas.shared import KlijentCreate, KlijentUpdateFull, KlijentUpdatePartial
 from app.exceptions import DbnotFoundException, KlijentAlreadyExistsException
+from app.core.security import hash_password
+
 
 
 def get_klijent(db: Session, klijent_id: int) -> Klijent:
@@ -36,35 +38,31 @@ def list_klijenti(
 
 def create_klijent(db: Session, klijent_data: klijentSchemas.KlijentCreate) -> Klijent:
     """
-    Kreira novog klijenta u bazi podataka, ali provjerava da li već postoji klijent sa istim korisničkim imenom.
+    Kreira novog klijenta u bazi podataka, ali provjerava da li već postoji klijent sa istim korisničkim imenom, email-om ili brojem telefona.
     """
-    # Provjera da li klijent s istim username-om već postoji
-    existing_klijent = db.query(Klijent).filter(Klijent.username == klijent_data.username).first()
-    if existing_klijent:
-        raise KlijentAlreadyExistsException(f"Klijent sa korisničkim imenom '{klijent_data.username}' već postoji.")
+    existing_klijent = db.query(Klijent).filter(
+        (Klijent.username == klijent_data.username) |
+        (Klijent.email == klijent_data.email) |
+        (Klijent.broj_telefona == klijent_data.broj_telefona)
+    ).first()
 
-    new_klijent = Klijent(**klijent_data.model_dump())
+    if existing_klijent:
+        raise KlijentAlreadyExistsException("Korisnik sa ovim email-om, korisničkim imenom ili brojem telefona već postoji.")
+
+    new_klijent = Klijent(
+        ime=klijent_data.ime,
+        prezime=klijent_data.prezime,
+        username=klijent_data.username,
+        email=klijent_data.email,
+        datum_rodjenja=klijent_data.datum_rodjenja,
+        broj_telefona=klijent_data.broj_telefona,
+        hashed_password=hash_password(klijent_data.hashed_password),
+        fotografija=klijent_data.fotografija,
+    )
     db.add(new_klijent)
     db.commit()
     db.refresh(new_klijent)
     return new_klijent
-
-def update_klijent_full(db: Session, klijent_id: int, klijent_data: klijentSchemas.KlijentUpdateFull) -> Klijent:
-    klijent = db.get(Klijent, klijent_id)
-
-    # Provera da li korisničko ime već postoji kod drugog klijenta
-    existing_klijent = db.execute(
-        select(Klijent).where(Klijent.username == klijent_data.username, Klijent.id != klijent_id)).scalars().first()
-    if existing_klijent:
-        raise KlijentAlreadyExistsException(f"Klijent sa korisničkim imenom '{klijent_data.username}' već postoji.")
-
-    update_data = klijent_data.model_dump()
-    for key, value in update_data.items():
-        setattr(klijent, key, value)
-
-    db.commit()
-    db.refresh(klijent)
-    return klijent
 
 def update_klijent_partially(db: Session, klijent_id: int, klijent_data: klijentSchemas.KlijentUpdatePartial) -> Klijent:
     klijent = get_klijent(db, klijent_id)

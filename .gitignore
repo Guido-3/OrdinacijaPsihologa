@@ -5,3 +5,4 @@ __pycache__/
 alembic/versions/*
 !alembic/versions/README  # Sačuvaj README ako postoji
 .env
+node_modules/

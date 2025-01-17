@@ -1,0 +1,55 @@
+/* Kontejner za formu */
+.azuriraj-termin-container {
+    max-width: 400px;
+    margin: 5rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Naslov */
+.azuriraj-termin-container h2 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+/* Stilizacija formi */
+.azuriraj-termin-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Stilizacija input polja */
+.azuriraj-termin-container input,
+.azuriraj-termin-container select {
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+/* Dugme */
+.azuriraj-termin-container button {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.azuriraj-termin-container button:hover {
+    background-color: #0056b3;
+}
+
+/* Greška */
+.error-message {
+    color: red;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}

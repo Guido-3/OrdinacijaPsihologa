@@ -7,7 +7,7 @@ from app.models.tip_termina import TipTermina
 import app.schemas.termin as terminSchemas
 # from app.schemas.shared import TerminCreate, TerminUpdateFull, TerminUpdatePartial, FilterTermin
 from app.exceptions import DbnotFoundException
-from datetime import datetime
+from datetime import datetime, timezone
 
 def is_time_slot_taken(db: Session, termin_id: int, datum_vrijeme: datetime) -> bool:
     """
@@ -54,22 +54,26 @@ def get_termin(db: Session, termin_id: int) -> Termin:
     
     return termin
 
+from datetime import datetime
+
 def list_termini(db: Session, filters: terminSchemas.FilterTermin = terminSchemas.FilterTermin()) -> list[Termin]:
     """
-    Dohvata sve termine ili filtrira prema prosleđenim parametrima
-    (status, datum, klijent, grupa, ime i prezime klijenta, naziv grupe).
+    Dohvata samo buduće termine ili filtrira prema prosleđenim parametrima.
     """
     query = select(Termin).options(
         joinedload(Termin.klijent),
-        joinedload(Termin.grupa)
+        joinedload(Termin.grupa),
+        joinedload(Termin.tip_termina)
     )
 
     # Dodavanje filtera
     conditions = []
+    now = datetime.now(timezone.utc) # 👈 Dobijamo trenutni datum i vreme
+
+    conditions.append(Termin.datum_vrijeme >= now)  # 👈 Prikazujemo samo buduće termine
+
     if filters.status:
         conditions.append(Termin.status == filters.status)
-    if filters.datum_vrijeme:
-        conditions.append(Termin.datum_vrijeme == filters.datum_vrijeme)
     if filters.klijent_id:
         conditions.append(Termin.klijent_id == filters.klijent_id)
     if filters.grupa_id:
@@ -85,7 +89,6 @@ def list_termini(db: Session, filters: terminSchemas.FilterTermin = terminSchema
         query = query.where(and_(*conditions))
 
     return db.execute(query).scalars().all()
-
 
 def create_termin(db: Session, termin_data: terminSchemas.TerminCreate) -> Termin:
     """

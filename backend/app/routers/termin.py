@@ -19,11 +19,12 @@ def get_termin(termin_id: int, db: Session = Depends(get_db)):
 
 @router.get("", response_model=List[terminSchemas.Termin])
 def list_termini(
-    filters: terminSchemas.FilterTermin = Depends(),
+    klijent_id: Optional[int] = None,  # 👈 Omogućavamo filtriranje po klijentovom ID-u
     db: Session = Depends(get_db)
 ):
-
+    filters = terminSchemas.FilterTermin(klijent_id=klijent_id)
     return termin.list_termini(db, filters)
+
 
 @router.post("", response_model=terminSchemas.Termin)
 def create_termin(termin_data: terminSchemas.TerminCreate, db: Session = Depends(get_db)):

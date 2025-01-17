@@ -24,7 +24,7 @@ def create_klijent(klijent_data: klijentSchemas.KlijentCreate, db: Session = Dep
     try:
         return klijent.create_klijent(db, klijent_data)
     except KlijentAlreadyExistsException:
-        raise HTTPException(status_code=400, detail=f"Klijent sa korisničkim imenom '{klijent_data.username}' već postoji.")
+        raise HTTPException(status_code=400, detail=f"Korisnik sa ovim email-om, korisničkim imenom ili brojem telefona već postoji.")
 
 @router.put("/{klijent_id}", response_model=klijentSchemas.Klijent)
 def update_klijent_full(klijent_id: int, klijent_data: klijentSchemas.KlijentUpdateFull, db: Session = Depends(get_db)):

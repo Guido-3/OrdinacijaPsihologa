@@ -1,0 +1,74 @@
+/* Navbar stilizacija */
+.navbar {
+  position: fixed; /* Ostaće na vrhu ekrana */
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff; /* Bela pozadina */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Blagi senka efekat */
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000; /* Osigurava da navbar bude iznad svih elemenata */
+}
+
+/* Kontejner za sadržaj navbar-a */
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Stilizacija naslova/loga */
+.navbar-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #007bff;
+  text-decoration: none;
+}
+
+/* Stilizacija dugmadi */
+.navbar-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+/* Linkovi u navbaru */
+.navbar-link {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 10px 15px;
+}
+
+.navbar-button {
+  padding: 8px 15px;
+  font-size: 1rem;
+  text-decoration: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+}
+
+.navbar-button:hover {
+  opacity: 0.8;
+}
+
+.logout-button {
+  background-color: #dc3545;
+}
+
+.logout-button:hover {
+  background-color: #c82333;
+}
+
+.navbar-button {
+  background-color: #007bff;
+}
+
+.navbar-button:hover {
+  background-color: #0056b3;
+}
