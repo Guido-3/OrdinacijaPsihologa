@@ -1,72 +1,98 @@
 /* Stilizacija glavne sekcije */
 .home-container {
-    text-align: center;
-    padding: 4rem;
-    font-family: Arial, sans-serif;
-  }
-  
-  /* Stilizacija profila */
-  .profile-section {
-    margin-bottom: 2rem;
-  }
-  
-  .profile-image {
-    width: 300px;
-    height: 300px;
-    border-radius: 50%; /* Slika u krugu */
-    object-fit: cover; /* Sprečava izobličenje slike */
-    border: 2px solid #007bff; /* Plavi okvir */
-  }
-  
-  .profile-info {
-    margin: 1rem 0;
-    font-size: 1rem;
-    color: #555;
-  }
-  
-  /* Sekcija dodatnih informacija */
-  .about-section {
-    margin: 2rem 0;
-    padding: 0 1rem;
-  }
-  
-  .about-section h3 {
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
-    color: #333;
-  }
-  
-  .about-section p {
-    font-size: 1rem;
-    color: #666;
-  }
-  
-  /* Dugmad za akcije */
-  .action-buttons .btn {
-    display: inline-block;
-    margin: 0.5rem;
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
-    color: white;
-  }
-  
-  .btn-primary {
-    background-color: #007bff;
-  }
-  
-  .btn-secondary {
-    background-color: #6c757d;
-  }
-  
-  .btn-primary:hover {
-    background-color: #0056b3;
-  }
-  
-  .btn-secondary:hover {
-    background-color: #5a6268;
-  }
-  
+  text-align: center;
+  padding: 4rem 2rem;
+  font-family: 'Roboto', sans-serif; /* Moderniji font */
+  background-color: #f8f9fa; /* Svijetla pozadina za profesionalni izgled */
+  color: #212529; /* Neutralna tamna boja teksta */
+  line-height: 1.6; /* Poboljšana čitljivost */
+}
+
+/* Stilizacija profila */
+.profile-section {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.profile-image {
+  width: 280px;
+  height: 280px;
+  border-radius: 50%; /* Slika u krugu */
+  object-fit: cover; /* Sprečava izobličenje slike */
+  border: 3px solid #007bff; /* Deblji plavi okvir za naglasak */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Blaga sjenka za dubinu */
+  transition: transform 0.3s ease; /* Glatki efekt prelaska pri hoveru */
+}
+
+.profile-image:hover {
+  transform: scale(1.05); /* Suptilno povećanje pri hoveru */
+}
+
+.profile-info {
+  margin: 1.5rem 0;
+  font-size: 1.1rem;
+  color: #495057; /* Blaga siva za profesionalni ton */
+}
+
+/* Sekcija dodatnih informacija */
+.about-section {
+  margin: 2.5rem 0;
+  padding: 0 1.5rem;
+  text-align: left; /* Lijevo poravnanje za profesionalni izgled */
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.about-section h3 {
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: #343a40; /* Tamna boja za naglašavanje naslova */
+  border-bottom: 2px solid #007bff; /* Plava linija ispod naslova */
+  padding-bottom: 0.5rem;
+}
+
+.about-section p {
+  font-size: 1.1rem;
+  color: #6c757d; /* Neutralna siva za tekst */
+  line-height: 1.8; /* Poboljšana čitljivost */
+}
+
+/* Dugmad za akcije */
+.action-buttons {
+  margin-top: 2rem;
+}
+
+.action-buttons .btn {
+  display: inline-block;
+  margin: 0.5rem;
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 25px; /* Zaobljeni oblik dugmadi */
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sjenka za profesionalni izgled */
+  transition: all 0.3s ease; /* Glatki prelazi za hover efekte */
+}
+
+.btn-primary {
+  background-color: #007bff;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Pojačana sjenka pri hoveru */
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Pojačana sjenka pri hoveru */
+}

@@ -27,7 +27,21 @@ const Home = () => {
           <p>
             Ordinacija psihologa pruža podršku za različite izazove, uključujući
             anksioznost, stres, porodične odnose i još mnogo toga. Terapije su
-            dostupne uživo i online.
+            dostupne uživo i online. Naš cilj je da obezbijedimo sigurno i
+            podržavajuće okruženje gdje se možete osjećati slobodno da dijelite
+            svoje misli i osjećanja.
+          </p>
+          <p>
+            Svaka sesija je prilagođena vašim potrebama, a naši stručnjaci
+            koriste naučno dokazane metode kako bi vam pomogli da postignete
+            emocionalnu ravnotežu i poboljšate kvalitet života.
+          </p>
+          <p>
+            Registracija i prijava su neophodni koraci kako biste mogli da
+            zakažete termin. Ovo nam omogućava da personalizujemo vašu podršku
+            i osiguramo efikasan proces zakazivanja. Nakon prijave, možete
+            pregledati dostupne termine i rezervisati onaj koji vam najviše
+            odgovara.
           </p>
         </div>
 

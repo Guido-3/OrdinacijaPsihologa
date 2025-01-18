@@ -1,8 +1,10 @@
 /* Glavni kontejner */
 .dashboard-container {
   text-align: center;
-  padding: 2rem;
-  font-family: Arial, sans-serif;
+  padding: 3rem 1rem;
+  font-family: 'Roboto', sans-serif; /* Moderniji font */
+  background-color: #f8f9fa; /* Svijetla pozadina za profesionalniji izgled */
+  color: #212529; /* Neutralna tamna boja teksta */
 }
 
 /* Lista termina */
@@ -10,58 +12,67 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: 1.5rem; /* Povećan razmak za bolju čitljivost */
+  margin-bottom: 3rem;
 }
 
 /* Stilizacija kartica termina */
 .termin-card {
-  width: 80%;
-  max-width: 500px;
+  width: 90%;
+  max-width: 600px;
   background: #ffffff;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border-radius: 10px; /* Veća zaobljenost za moderan izgled */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Suptilna sjenka za dubinu */
   text-align: left;
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start; /* Lijevo poravnanje sadržaja */
+  border: 1px solid #dee2e6; /* Blagi okvir za dodatni kontrast */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Glatki efekti pri hoveru */
+}
+
+.termin-card:hover {
+  transform: translateY(-5px); /* Suptilno podizanje pri hoveru */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Pojačana sjenka pri hoveru */
 }
 
 /* Dugmad za akcije - ažuriranje i brisanje */
 .termin-actions {
   display: flex;
-  justify-content: center; /* Centriranje dugmadi */
-  gap: 15px; /* Razmak između dugmadi */
-  margin-top: 10px;
+  justify-content: space-between; /* Prostor između dugmadi */
+  gap: 20px; /* Povećan razmak između dugmadi */
+  margin-top: 15px;
   width: 100%;
 }
 
 /* Stilizacija dugmadi */
 .btn-update,
 .btn-delete {
-  width: 120px; /* Postavlja istu širinu */
-  padding: 10px 15px;
+  width: 140px; /* Šire dugme za bolju estetiku */
+  padding: 12px 20px;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 25px; /* Zaobljeni oblik dugmadi */
   cursor: pointer;
   font-size: 1rem;
   border: none;
   text-decoration: none;
   display: inline-block;
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 600; /* Poludebela slova za isticanje */
+  transition: all 0.3s ease; /* Glatki efekti pri hoveru */
 }
 
 /* Dugme za ažuriranje termina */
 .btn-update {
   background-color: #ffc107; /* Žuta boja za isticanje */
-  color: black;
+  color: #212529; /* Tamnosiva boja teksta za kontrast */
 }
 
 .btn-update:hover {
   background-color: #e0a800;
+  box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4); /* Blaga sjenka pri hoveru */
 }
 
 /* Dugme za brisanje termina */
@@ -72,28 +83,32 @@
 
 .btn-delete:hover {
   background-color: #c82333;
+  box-shadow: 0 4px 10px rgba(220, 53, 69, 0.4); /* Blaga sjenka pri hoveru */
 }
 
 /* Sekcija za dugme "Zakazi novi termin" */
 .zakazi-sekcija {
   text-align: center;
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
 /* Dugme za zakazivanje */
 .btn-primary {
   display: inline-block;
-  padding: 12px 20px;
-  font-size: 1rem;
+  padding: 14px 24px; /* Veći padding za elegantniji izgled */
+  font-size: 1.1rem;
   color: white;
   background-color: #007bff;
   border: none;
-  border-radius: 5px;
+  border-radius: 25px; /* Zaobljeni oblik dugmeta */
   cursor: pointer;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600; /* Poludebela slova */
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2); /* Sjenka za moderan izgled */
+  transition: all 0.3s ease; /* Glatki efekti pri hoveru */
 }
 
 .btn-primary:hover {
   background-color: #0056b3;
+  box-shadow: 0 6px 12px rgba(0, 86, 179, 0.4); /* Pojačana sjenka pri hoveru */
 }

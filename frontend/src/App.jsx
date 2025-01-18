@@ -11,11 +11,13 @@ import "./App.css";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
+  const [username, setUsername] = useState(localStorage.getItem("username") || "");
 
   // Osluškujemo promene u autentifikaciji
   useEffect(() => {
     const checkAuth = () => {
       setIsAuthenticated(!!localStorage.getItem("token"));
+      setUsername(localStorage.getItem("username") || "");
     };
 
     window.addEventListener("authChange", checkAuth);
@@ -24,7 +26,7 @@ function App() {
 
   return (
     <Router>
-      <Navbar isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} /> {/* ✅ Prosleđujemo state */}
+      <Navbar isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} username={username} /> {/* ✅ Prosleđujemo state i username */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />

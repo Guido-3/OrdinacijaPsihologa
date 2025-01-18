@@ -5,8 +5,8 @@
   left: 0;
   width: 100%;
   background-color: #ffffff; /* Bela pozadina */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Blagi senka efekat */
-  padding: 15px 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Suptilna sjenka za dubinu */
+  padding: 15px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -23,38 +23,54 @@
 
 /* Stilizacija naslova/loga */
 .navbar-logo {
-  font-size: 1.5rem;
+  font-size: 1.6rem; /* Blago povećan font za isticanje */
   font-weight: bold;
-  color: #007bff;
+  color: #0056b3; /* Tamnija nijansa plave za profesionalniji izgled */
   text-decoration: none;
+  transition: color 0.3s ease; /* Glatka tranzicija za hover efekat */
+}
+
+.navbar-logo:hover {
+  color: #003d80; /* Suptilna promjena boje pri hoveru */
 }
 
 /* Stilizacija dugmadi */
 .navbar-buttons {
   display: flex;
-  gap: 15px;
+  gap: 20px; /* Veći razmak između elemenata */
 }
 
 /* Linkovi u navbaru */
 .navbar-link {
-  color: #007bff;
+  color: #0056b3;
   text-decoration: none;
   font-size: 1rem;
   padding: 10px 15px;
+  font-weight: 500; /* Poludebela slova za isticanje */
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Suptilni hover efekti */
+}
+
+.navbar-link:hover {
+  background-color: #e9ecef; /* Svijetlosiva pozadina pri hoveru */
+  color: #003d80; /* Tamnija nijansa plave za tekst */
 }
 
 .navbar-button {
-  padding: 8px 15px;
+  padding: 10px 20px; /* Prošireni padding za bolji balans */
   font-size: 1rem;
   text-decoration: none;
   color: white;
-  border-radius: 5px;
+  border-radius: 25px; /* Veće zaobljenje za elegantniji izgled */
   cursor: pointer;
   border: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Suptilni hover efekti */
 }
 
 .navbar-button:hover {
-  opacity: 0.8;
+  transform: translateY(-2px); /* Suptilno podizanje pri hoveru */
+  opacity: 0.9;
 }
 
 .logout-button {
@@ -62,7 +78,7 @@
 }
 
 .logout-button:hover {
-  background-color: #c82333;
+  background-color: #b92c3a;
 }
 
 .navbar-button {
@@ -71,4 +87,20 @@
 
 .navbar-button:hover {
   background-color: #0056b3;
+}
+
+.navbar-username {
+  font-size: 1.2rem; /* Elegantniji i moderniji font */
+  color: #0056b3; /* Tamnija nijansa plave za profesionalni izgled */
+  font-weight: 500; /* Poludebela slova za bolju čitljivost */
+  margin-right: 20px; /* Proširen razmak za bolje poravnanje */
+  padding: 5px 10px; /* Suptilna unutrašnja margina za balans */
+  background-color: transparent; /* Uklonjena pozadina za minimalistički izgled */
+  border: none; /* Uklonjen okvir */
+  text-transform: capitalize; /* Prvo slovo veliko za estetiku */
+  transition: color 0.3s ease; /* Glatka tranzicija za hover efekat */
+}
+
+.navbar-username:hover {
+  color: #003d80; /* Tamnija plava za hover efekat */
 }
