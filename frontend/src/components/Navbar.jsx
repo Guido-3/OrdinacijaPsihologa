@@ -1,13 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
-import "../styles/Navbar.css"; 
+import "../styles/Navbar.css";
 
-const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {  // ✅ Primamo stanje iz App.jsx
+const Navbar = ({ isAuthenticated, setIsAuthenticated, username }) => { // Dodali smo username kao prop
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); 
-    setIsAuthenticated(false); // ✅ Direktno ažuriramo stanje
-    window.dispatchEvent(new Event("authChange")); // ✅ Obaveštavamo aplikaciju o promeni
+    localStorage.removeItem("token");
+    localStorage.removeItem("username"); // Brisanje korisnickog imena
+    setIsAuthenticated(false);
+    window.dispatchEvent(new Event("authChange"));
     navigate("/");
   };
 
@@ -15,13 +16,10 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {  // ✅ Primamo st
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">Ordinacija Psihologa</Link>
-
         <div className="navbar-buttons">
           {isAuthenticated ? (
             <>
-              <Link to="/dashboard" className="navbar-link">Moji termini</Link>
-              <Link to="/dashboard/grupe" className="navbar-link">Moje grupe</Link>
-              <Link to="/dashboard/zakazi" className="navbar-link">Zakazi termin</Link>
+              <span className="navbar-username">{username}</span> {/* Prikaz korisnickog imena */}
               <button onClick={handleLogout} className="navbar-button logout-button">Odjavi se</button>
             </>
           ) : (
