@@ -20,7 +20,7 @@ const Dashboard = () => {
           return;
         }
 
-        const response = await axios.get(`http://localhost:8000/termin?klijent_id=${userId}`, {
+        const response = await axios.get(`http://localhost:8000/termin/svi_termini?klijent_id=${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -45,7 +45,7 @@ const Dashboard = () => {
   const handleDelete = async (terminId) => {
     const confirmDelete = window.confirm("Da li ste sigurni da želite da obrišete ovaj termin?");
     
-    if (!confirmDelete) return; // Ako korisnik odustane, ništa se ne dešava
+    if (!confirmDelete) return; 
 
     try {
       const token = localStorage.getItem("token");
@@ -55,7 +55,6 @@ const Dashboard = () => {
         },
       });
 
-      // Ažuriranje stanja da bi se termin uklonio sa liste bez osvežavanja stranice
       setTermini((prevTermini) => prevTermini.filter((termin) => termin.id !== terminId));
     } catch (error) {
       console.error("Greška pri brisanju termina:", error);
@@ -78,6 +77,15 @@ const Dashboard = () => {
         ) : (
           termini.map((termin) => (
             <div key={termin.id} className="termin-card">
+              {termin.grupa_id ? (
+                <p>
+                  <strong>Grupa:</strong> {termin.grupa?.naziv || "Nepoznato"}
+                </p>
+              ) : (
+                <p>
+                  <strong>Tip termina:</strong> Individualni
+                </p>
+              )}
               <p><strong>Datum i vreme:</strong> {new Date(termin.datum_vrijeme).toLocaleString()}</p>
               <p><strong>Način izvođenja:</strong> {termin.nacin_izvodjenja}</p>
               

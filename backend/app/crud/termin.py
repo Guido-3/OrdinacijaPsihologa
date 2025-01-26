@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session, joinedload, selectinload
-from sqlalchemy import select, and_
+from sqlalchemy import select, and_, or_
 from app.models.termin import Termin
 from app.models.klijent import Klijent
 from app.models.grupa import Grupa
@@ -87,6 +87,77 @@ def list_termini(db: Session, filters: terminSchemas.FilterTermin = terminSchema
 
     if conditions:
         query = query.where(and_(*conditions))
+
+    return db.execute(query).scalars().all()
+
+from sqlalchemy import or_
+
+def list_svi_termini(db: Session, klijent_id: int) -> list[Termin]:
+    """
+    Vraća sve buduće termine za određenog klijenta, uključujući:
+    - Individualne termine (gdje je klijent direktno zakazan)
+    - Grupne termine (gdje klijent pripada grupi koja ima termin)
+    """
+    sada = datetime.now(timezone.utc)
+
+    query = select(Termin).options(
+        joinedload(Termin.klijent),
+        joinedload(Termin.grupa),
+        joinedload(Termin.tip_termina)
+    ).where(
+        and_(
+            Termin.datum_vrijeme >= sada,  # 📌 Samo budući termini
+            or_(
+                Termin.klijent_id == klijent_id,  # 📌 Individualni termini
+                Termin.grupa_id.in_(  # 📌 Grupni termini
+                    select(Grupa.id).where(Grupa.klijenti.any(id=klijent_id))
+                )
+            )
+        )
+    )
+
+    return db.execute(query).scalars().all()
+
+def list_svi_termini_za_klijenta(db: Session, klijent_id: int) -> list[Termin]:
+    """
+    Vraća sve buduće termine za određenog klijenta:
+    - Individualne termine (gdje je klijent direktno zakazan).
+    - Grupne termine (gdje klijent pripada grupi koja ima termin).
+    """
+    sada = datetime.now(timezone.utc)
+
+    query = select(Termin).options(
+        joinedload(Termin.klijent),
+        joinedload(Termin.grupa),
+        joinedload(Termin.tip_termina)
+    ).where(
+        and_(
+            Termin.datum_vrijeme >= sada,  
+            or_(
+                Termin.klijent_id == klijent_id,  
+                Termin.grupa_id.in_(  
+                    select(Grupa.id).where(Grupa.klijenti.any(id=klijent_id))
+                )
+            )
+        )
+    )
+
+    return db.execute(query).scalars().all()
+
+def list_termini_za_grupu(db: Session, grupa_id: int) -> list[Termin]:
+    """
+    Vraća sve buduće termine za određenu grupu.
+    """
+    sada = datetime.now(timezone.utc)
+
+    query = select(Termin).options(
+        joinedload(Termin.tip_termina)
+    ).where(
+        and_(
+            Termin.datum_vrijeme >= sada,
+            Termin.grupa_id == grupa_id  # 📌 Filtriramo samo termine za datu grupu
+        )
+    )
 
     return db.execute(query).scalars().all()
 

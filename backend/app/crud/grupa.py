@@ -21,24 +21,30 @@ def list_grupe(
     db: Session,
     naziv: Optional[str] = None,
     klijent_ime: Optional[str] = None,
-    klijent_prezime: Optional[str] = None
+    klijent_prezime: Optional[str] = None,
+    klijent_id: Optional[int] = None
 ) -> list[Grupa]:
     """
-    Dohvata sve grupe ili filtrira po nazivu, imenu i prezimenu klijenata.
+    Dohvata sve grupe ili filtrira po nazivu, imenu/prezimenu klijenata i klijent ID-u.
     """
     query = select(Grupa).distinct()
 
     if naziv:
         query = query.where(Grupa.naziv.ilike(f"%{naziv}%"))
 
-    if klijent_ime or klijent_prezime:
+    if klijent_id or klijent_ime or klijent_prezime:
         query = query.join(Grupa.klijenti)
+
+        if klijent_id:
+            query = query.where(Klijent.id == klijent_id)
+
         if klijent_ime:
             query = query.where(Klijent.ime.ilike(f"%{klijent_ime}%"))
+
         if klijent_prezime:
             query = query.where(Klijent.prezime.ilike(f"%{klijent_prezime}%"))
 
-    return db.scalars(query).all()
+    return db.execute(query).scalars().all()
 
 # mozda je ovaj kod bolji
 # def list_grupe(
@@ -64,20 +70,22 @@ def list_grupe(
 
 def create_grupa(db: Session, grupa_data: grupaSchemas.GrupaCreate) -> Grupa:
     """
-    Kreira novu grupu samo ako svi navedeni klijenti postoje.
+    Kreira novu grupu na osnovu unetih username-ova klijenata.
     """
-    klijenti = db.query(Klijent).filter(Klijent.id.in_(grupa_data.klijenti_id)).all()
-    if len(klijenti) != len(grupa_data.klijenti_id):
-        missing_ids = set(grupa_data.klijenti_id) - {klijent.id for klijent in klijenti}
-        raise ValueError(f"Klijenti sa ID-evima {missing_ids} ne postoje.")
+    # Dohvatanje klijenata po username-u
+    klijenti = db.query(Klijent).filter(Klijent.username.in_(grupa_data.klijenti_usernames)).all()
 
+    # Provera da li svi uneti korisnici postoje
+    if len(klijenti) != len(grupa_data.klijenti_usernames):
+        found_usernames = {klijent.username for klijent in klijenti}
+        missing_usernames = set(grupa_data.klijenti_usernames) - found_usernames
+        raise ValueError(f"Korisnici sa username-ovima {missing_usernames} ne postoje.")
+
+    # Kreiranje grupe
     new_grupa = Grupa(naziv=grupa_data.naziv, opis=grupa_data.opis, klijenti=klijenti)
-
     db.add(new_grupa)
     db.commit()
     db.refresh(new_grupa)
-
-    new_grupa.klijenti_id = [klijent.id for klijent in new_grupa.klijenti]
 
     return new_grupa
 

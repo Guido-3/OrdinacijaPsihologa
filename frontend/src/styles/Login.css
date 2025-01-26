@@ -1,50 +1,65 @@
 .login-container {
-    width: 100%;
-    max-width: 400px;
-    margin: 5rem auto;
-    padding: 2rem;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  .login-container h2 {
-    margin-bottom: 1rem;
-    color: #333;
-  }
-  
-  .login-container form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .login-container input {
-    padding: 10px;
-    margin: 8px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-  }
-  
-  .login-container button {
-    margin-top: 10px;
-    padding: 10px;
-    font-size: 1rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .login-container button:hover {
-    background-color: #0056b3;
-  }
-  
-  .error-message {
-    color: red;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-  }
-  
+  width: 100%;
+  max-width: 400px;
+  margin: 5rem auto;
+  padding: 2.5rem;
+  background-color: #f8f9fa; /* Svijetla siva za sofisticiraniji izgled */
+  border-radius: 15px; /* Veće zaobljenje za moderniji izgled */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Pojačana sjenka za dubinu */
+  text-align: center;
+  font-family: 'Roboto', sans-serif; /* Moderniji font */
+}
+
+.login-container h2 {
+  margin-bottom: 1.5rem;
+  color: #212529; /* Tamnija nijansa sive za profesionalan izgled */
+  font-size: 1.8rem; /* Veći font za naglašavanje */
+  font-weight: 600; /* Poludebela slova za isticanje naslova */
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-container input {
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ced4da; /* Neutralna siva boja za okvir */
+  border-radius: 10px; /* Veće zaobljenje za moderan izgled */
+  font-size: 1rem;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Suptilni hover efekti */
+}
+
+.login-container input:focus {
+  border-color: #007bff; /* Plavi okvir pri fokusu */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.25); /* Blaga sjena pri fokusu */
+  outline: none;
+}
+
+.login-container button {
+  margin-top: 15px;
+  padding: 12px;
+  font-size: 1.1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 25px; /* Zaobljeni oblik dugmeta */
+  cursor: pointer;
+  font-weight: 600; /* Poludebela slova */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Blaga sjenka za dubinu */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Suptilni hover efekti */
+}
+
+.login-container button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px); /* Suptilno podizanje pri hoveru */
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 1rem; /* Veći font za bolju vidljivost */
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}

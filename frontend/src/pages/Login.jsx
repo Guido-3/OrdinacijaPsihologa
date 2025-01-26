@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode"; // ✅ Ispravan import
+import { jwtDecode } from "jwt-decode";
 import "../styles/Login.css"; 
-const Login = ({ setIsAuthenticated }) => {  // ✅ Primamo funkciju iz App.jsx
+
+const Login = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState(null);
@@ -34,14 +35,17 @@ const Login = ({ setIsAuthenticated }) => {  // ✅ Primamo funkciju iz App.jsx
       console.log("Dekodirani token:", decoded);
 
       const userId = decoded.id;
-      if (!userId) {
-        throw new Error("ID korisnika nije pronađen u tokenu.");
+      const username = decoded.sub; // ✅ Dohvatanje username-a
+
+      if (!userId || !username) {
+        throw new Error("Podaci korisnika nisu pronađeni u tokenu.");
       }
 
       localStorage.setItem("user_id", userId);
+      localStorage.setItem("username", username); // ✅ Čuvamo username u localStorage
 
-      setIsAuthenticated(true); // ✅ Odmah osvežavamo stanje
-      window.dispatchEvent(new Event("authChange")); // ✅ Obaveštavamo aplikaciju o promeni
+      setIsAuthenticated(true);
+      window.dispatchEvent(new Event("authChange")); // ✅ Obavesti aplikaciju o promeni
       navigate("/dashboard");
     } catch (error) {
       console.error("Greška prilikom prijave:", error.response?.data || error.message);

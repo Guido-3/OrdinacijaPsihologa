@@ -1,7 +1,8 @@
+from __future__ import annotations  
 from pydantic import BaseModel, Field, ConfigDict, model_validator
 from typing import Annotated, Optional, ForwardRef
 from datetime import datetime
-# from app.schemas.grupa import Grupa
+from app.schemas.grupa import Grupa
 # from app.schemas.klijent import Klijent
 # from app.schemas.tip_termina import TipTermina
 
@@ -76,7 +77,7 @@ class TerminUpdatePartial(TerminBase):
 class Termin(TerminBase):
     id: int
     # klijent: Optional[Klijent] = None
-    # grupa: Optional[Grupa] = None
+    grupa: Optional[Grupa] = None
     # tip_termina: TipTermina
 
     model_config = ConfigDict(from_attributes=True)

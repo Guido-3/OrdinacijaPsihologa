@@ -1,0 +1,49 @@
+.napravi-grupu-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+  }
+  
+  .napravi-grupu-container h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .napravi-grupu-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
+  
+  .napravi-grupu-container ul li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .success-message {
+    color: green;
+  }
+  
+  .error-message {
+    color: red;
+  }
+  
+  .btn-add {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    display: block;
+  }
+  
+  .btn-add:hover {
+    background-color: #218838;
+  }
+  

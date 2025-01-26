@@ -1,3 +1,4 @@
+from __future__ import annotations  
 from pydantic import BaseModel, Field, ConfigDict, field_validator
 from typing import Optional, Annotated, ForwardRef
 # from app.schemas.klijent import Klijent
@@ -14,16 +15,16 @@ class GrupaBase(BaseModel):
     opis: Annotated[Optional[str], Field(max_length=200)] = None
 
 class GrupaCreate(GrupaBase):
-    klijenti_id: list[int]
+    klijenti_usernames: list[str]  # ✅ Umesto ID-jeva, korisnik unosi username-ove
 
-    @field_validator("klijenti_id")
+    @field_validator("klijenti_usernames")
     @classmethod
-    def validate_klijenti_id(cls, value):
+    def validate_klijenti_usernames(cls, value):
         if len(value) < 2:
             raise ValueError("Grupa mora imati makar dva klijenta.")
         
         if len(set(value)) != len(value):
-            raise ValueError("Lista klijenti_id ne smije sadržavati duplikate.")
+            raise ValueError("Lista klijenti_usernames ne smije sadržavati duplikate.")
 
         return value
 

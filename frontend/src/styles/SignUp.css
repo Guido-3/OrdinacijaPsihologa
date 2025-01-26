@@ -1,50 +1,65 @@
 .signup-container {
-    width: 100%;
-    max-width: 400px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  .signup-container h2 {
-    margin-bottom: 1rem;
-    color: #333;
-  }
-  
-  .signup-container form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .signup-container input {
-    padding: 10px;
-    margin: 8px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-  }
-  
-  .signup-container button {
-    margin-top: 10px;
-    padding: 10px;
-    font-size: 1rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .signup-container button:hover {
-    background-color: #0056b3;
-  }
-  
-  .error-message {
-    color: red;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-  }
-  
+  width: 100%;
+  max-width: 400px;
+  margin: 5rem auto;
+  padding: 2.5rem;
+  background-color: #f8f9fa; /* Svijetla siva kao na login stranici */
+  border-radius: 15px; /* Veće zaobljenje */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Pojačana sjenka */
+  text-align: center;
+  font-family: 'Roboto', sans-serif; /* Moderniji font kao na loginu */
+}
+
+.signup-container h2 {
+  margin-bottom: 1.5rem;
+  color: #212529; /* Tamnija nijansa sive */
+  font-size: 1.8rem; /* Veći font za naglašavanje */
+  font-weight: 600; /* Poludebela slova */
+}
+
+.signup-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.signup-container input {
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ced4da; /* Neutralna siva boja */
+  border-radius: 10px; /* Veće zaobljenje */
+  font-size: 1rem;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.signup-container input:focus {
+  border-color: #007bff; /* Plavi okvir pri fokusu */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.25); /* Blaga sjena pri fokusu */
+  outline: none;
+}
+
+.signup-container button {
+  margin-top: 15px;
+  padding: 12px;
+  font-size: 1.1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 25px; /* Zaobljeni oblik dugmeta kao na loginu */
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.signup-container button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px); /* Suptilno podizanje */
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}

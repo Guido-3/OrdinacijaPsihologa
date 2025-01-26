@@ -7,6 +7,8 @@ import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
 import AzurirajTermin from "./pages/AzurirajTermin";
 import ZakaziTermin from "./pages/ZakaziTermin";
+import NapraviGrupu from "./pages/NapraviGrupu";
+import DashboardGrupe from "./pages/DashboardGrupe";
 import "./App.css";
 
 function App() {
@@ -32,6 +34,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/azuriraj/:terminId" element={<AzurirajTermin />} />
         <Route path="/dashboard/zakazi" element={<ZakaziTermin />} />
+        <Route path="/dashboard/grupe" element={<DashboardGrupe />}/>
+        <Route path="/dashboard/grupe/napravi" element={<NapraviGrupu />} />
       </Routes>
     </Router>
   );

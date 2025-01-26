@@ -26,6 +26,9 @@ def list_grupe(
 
 @router.post("", response_model=grupaSchemas.Grupa)
 def create_grupa(grupa_data: grupaSchemas.GrupaCreate, db: Session = Depends(get_db)):
+    """
+    Kreira grupu na osnovu unetih username-ova.
+    """
     try:
         return grupa.create_grupa(db, grupa_data)
     except ValueError as e:
