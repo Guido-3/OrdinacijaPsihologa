@@ -27,7 +27,7 @@ def list_grupe(
     """
     Dohvata sve grupe ili filtrira po nazivu, imenu/prezimenu klijenata i klijent ID-u.
     """
-    query = select(Grupa).distinct()
+    query = select(Grupa).options(joinedload(Grupa.klijenti)).distinct()
 
     if naziv:
         query = query.where(Grupa.naziv.ilike(f"%{naziv}%"))
@@ -44,7 +44,7 @@ def list_grupe(
         if klijent_prezime:
             query = query.where(Klijent.prezime.ilike(f"%{klijent_prezime}%"))
 
-    return db.execute(query).scalars().all()
+    return db.execute(query).unique().scalars().all()
 
 # mozda je ovaj kod bolji
 # def list_grupe(

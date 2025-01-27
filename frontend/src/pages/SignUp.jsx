@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode"; // ✅ Dekodiranje tokena
 import "../styles/SignUp.css"; // CSS za stilizaciju
 
-const SignUp = () => {
-  const navigate = useNavigate(); // Omogućava preusmeravanje nakon registracije
+const SignUp = ({ setIsAuthenticated }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     ime: "",
     prezime: "",
@@ -18,66 +19,86 @@ const SignUp = () => {
 
   const [error, setError] = useState(null);
 
-  // Funkcija za upravljanje unosom u formu
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Funkcija za slanje podataka na backend
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null); // Resetujemo greške
 
-    // Provera da li se lozinke poklapaju
     if (formData.password !== formData.confirmPassword) {
       setError("Lozinke se ne poklapaju.");
       return;
     }
 
     try {
-      // Slanje podataka na backend
-      const response = await axios.post("http://localhost:8000/klijent", {
-        ime: formData.ime,
-        prezime: formData.prezime,
-        username: formData.username,
-        email: formData.email,
-        datum_rodjenja: formData.datum_rodjenja,
-        broj_telefona: formData.broj_telefona,
-        hashed_password: formData.password, // Backend očekuje hashed_password
-      },
-      {
-        headers: { "Content-Type": "application/json" }, // **Ispravan format**
-      }
-    );
+      // 1️⃣ Kreiramo klijenta
+      const response = await axios.post(
+        "http://localhost:8000/klijent",
+        {
+          ime: formData.ime,
+          prezime: formData.prezime,
+          username: formData.username,
+          email: formData.email,
+          datum_rodjenja: formData.datum_rodjenja,
+          broj_telefona: formData.broj_telefona,
+          hashed_password: formData.password,
+        },
+        { headers: { "Content-Type": "application/json" } }
+      );
 
-      console.log("Registracija uspešna:", response.data);
+      console.log("✅ Registracija uspešna:", response.data);
 
-      // Automatska prijava korisnika nakon registracije
+      // 2️⃣ Automatski prijavljujemo korisnika nakon registracije
       const loginResponse = await axios.post(
         "http://localhost:8000/auth/login",
         new URLSearchParams({
           username: formData.username,
           password: formData.password,
         }),
-        {
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        }
+        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
       );
 
-      // Čuvanje JWT tokena u localStorage
-      localStorage.setItem("token", loginResponse.data.access_token);
+      const token = loginResponse.data.access_token;
+      localStorage.setItem("token", token);
 
-      // Preusmeravanje na korisničku stranicu
+      // 3️⃣ Dekodiranje tokena za user_id i username (ISTO KAO U LOGINU)
+      const decoded = jwtDecode(token);
+      console.log("✅ Dekodirani token:", decoded);
+
+      const userId = decoded.id;
+      const username = decoded.sub; // ✅ Dohvatanje username-a
+
+      if (!userId || !username) {
+        throw new Error("Podaci korisnika nisu pronađeni u tokenu.");
+      }
+
+      // 4️⃣ Čuvamo user_id i username u localStorage (ISTO KAO U LOGINU)
+      localStorage.setItem("user_id", userId);
+      localStorage.setItem("username", username);
+
+      // 5️⃣ Ažuriramo stanje autentifikacije i navbar
+      setIsAuthenticated(true);
+      window.dispatchEvent(new Event("authChange")); // 🚀 Trigguje ažuriranje Navbara
+
+      // 6️⃣ Preusmeravamo korisnika na dashboard
       navigate("/dashboard");
+
     } catch (error) {
-      console.error("Greška prilikom registracije:", error.response?.data || error.message);
-      setError(error.response?.data?.detail || "Došlo je do greške prilikom registracije.");
+      console.error("❌ Greška prilikom registracije:", error);
+
+      // Sigurno postavljanje poruke greške
+      setError(
+        error.response?.data?.detail || "Došlo je do greške prilikom registracije."
+      );
     }
   };
 
   return (
     <div className="signup-container">
       <h2>Registracija</h2>
-      {error && <p className="error-message">{error}</p>}
+      {error && <p className="error-message">{typeof error === "string" ? error : "Došlo je do greške"}</p>}
       <form onSubmit={handleSubmit}>
         <input type="text" name="ime" placeholder="Ime" value={formData.ime} onChange={handleChange} required />
         <input type="text" name="prezime" placeholder="Prezime" value={formData.prezime} onChange={handleChange} required />

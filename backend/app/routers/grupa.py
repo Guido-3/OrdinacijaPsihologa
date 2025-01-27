@@ -20,9 +20,10 @@ def list_grupe(
     naziv: Optional[str] = None,
     klijent_ime: Optional[str] = None,
     klijent_prezime: Optional[str] = None,
+    klijent_id: Optional[int] = None,  # ✅ Dodajemo klijent_id kao parametar
     db: Session = Depends(get_db)
 ):
-    return grupa.list_grupe(db, naziv, klijent_ime, klijent_prezime)
+    return grupa.list_grupe(db, naziv, klijent_ime, klijent_prezime, klijent_id)
 
 @router.post("", response_model=grupaSchemas.Grupa)
 def create_grupa(grupa_data: grupaSchemas.GrupaCreate, db: Session = Depends(get_db)):
