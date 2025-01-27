@@ -29,7 +29,7 @@ function App() {
       <Navbar isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} /> {/* ✅ Prosleđujemo state */}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signup" element={<SignUp setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} /> {/* ✅ Prosleđujemo funkciju za ažuriranje */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/azuriraj/:terminId" element={<AzurirajTermin />} />
