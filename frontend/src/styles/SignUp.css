@@ -29,7 +29,12 @@
   border-radius: 10px; /* Veće zaobljenje */
   font-size: 1rem;
   background-color: #fff;
+  color: #212529; /* Crna boja za tekst unesen u polja */
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.signup-container input::placeholder {
+  color: #6c757d; /* Svjetlija siva za placeholder tekst */
 }
 
 .signup-container input:focus {
